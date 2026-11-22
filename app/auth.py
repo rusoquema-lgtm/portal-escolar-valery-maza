@@ -1,4 +1,4 @@
-﻿from datetime import datetime, timedelta
+from datetime import datetime, timedelta
 import bcrypt
 from fastapi import Depends, HTTPException, Request, status
 from jose import JWTError, jwt
@@ -6,7 +6,9 @@ from sqlalchemy.orm import Session
 from .database import get_db
 from .models import Usuario
 
-SECRET_KEY = "clave_secreta_escolar_cambiar_en_produccion"
+import os
+
+SECRET_KEY = os.getenv("SECRET_KEY", "clave_secreta_escolar_cambiar_en_produccion")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_HOURS = 12
 

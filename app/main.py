@@ -1,4 +1,4 @@
-﻿from collections import defaultdict
+from collections import defaultdict
 from pathlib import Path
 from uuid import uuid4
 from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
