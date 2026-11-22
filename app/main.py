@@ -319,63 +319,6 @@ def guardar_foto_alumno(foto: UploadFile | None) -> str | None:
 @app.get("/", response_class=HTMLResponse)
 def vista_login(request: Request, db: Session = Depends(get_db)):
     centro = obtener_o_crear_centro(db)
-
-    clases_disponibles = []
-    if usuario.rol == "docente":
-        for a in (asignaciones_docente or []):
-            etiqueta = f'{a.grado_ano.strip()}|{a.seccion.strip()}|{a.asignatura.strip()}'
-            clases_disponibles.append({
-                "clave": etiqueta,
-                "grado_ano": a.grado_ano.strip(),
-                "seccion": a.seccion.strip(),
-                "asignatura": a.asignatura.strip(),
-                "titulo": f'{a.grado_ano.strip()} "{a.seccion.strip()}" — {a.asignatura.strip()}',
-            })
-    else:
-        pares_vistos = set()
-        for m in matriculas:
-            par = (m.grado_ano.strip(), m.seccion.strip())
-            if par not in pares_vistos:
-                pares_vistos.add(par)
-                clases_disponibles.append({
-                    "clave": f'{par[0]}|{par[1]}|TODAS',
-                    "grado_ano": par[0],
-                    "seccion": par[1],
-                    "asignatura": "Todas las materias",
-                    "titulo": f'{par[0]} "{par[1]}"',
-                })
-
-    clase_activa = next((c for c in clases_disponibles if c["clave"] == clase_asistencia), None)
-    if clase_activa:
-        matriculas_clase_asistencia = [
-            m for m in matriculas
-            if m.grado_ano.strip().lower() == clase_activa["grado_ano"].lower()
-            and m.seccion.strip().lower() == clase_activa["seccion"].lower()
-        ]
-    else:
-        matriculas_clase_asistencia = []
-
-
-    resumen_asistencia_alumno = {}
-    for m in matriculas:
-        faltas = 0
-        retrasos = 0
-        justificadas = 0
-        for a in asistencias:
-            if a.matricula_id != m.id:
-                continue
-            if a.estado_justificacion == "Aprobada":
-                justificadas += 1
-            elif a.estado == "Inasistente":
-                faltas += 1
-            elif a.estado == "Retraso":
-                retrasos += 1
-        resumen_asistencia_alumno[m.id] = {
-            "faltas": faltas,
-            "retrasos": retrasos,
-            "justificadas": justificadas,
-        }
-
     return templates.TemplateResponse(request, "login.html", {"error": None, "centro": centro})
 
 
