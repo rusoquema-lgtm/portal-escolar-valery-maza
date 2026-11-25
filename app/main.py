@@ -237,6 +237,33 @@ def construir_rejilla_horario(horarios):
     return rejilla
 
 
+def filtrar_horarios_para_usuario(db: Session, usuario: Usuario, horarios: list, ano_id: int | None):
+    if not usuario or usuario.rol != "docente":
+        return horarios
+    q = db.query(AsignacionDocente).filter(AsignacionDocente.docente_id == usuario.id)
+    if ano_id:
+        q = q.filter(AsignacionDocente.ano_escolar_id == ano_id)
+    asigs = q.all()
+    if not asigs:
+        return []
+    filtrados = []
+    for h in horarios:
+        hg = (h.grado_ano or "").strip().lower()
+        hs = (h.seccion or "").strip().lower()
+        ha = (h.asignatura or "").strip().lower()
+        for a in asigs:
+            ag = (a.grado_ano or "").strip().lower()
+            asec = (a.seccion or "").strip().lower()
+            aasig = (a.asignatura or "").strip().lower()
+            ok_grado = (not ag) or (ag == hg)
+            ok_sec = (not asec) or (asec == "todas") or (asec == hs)
+            ok_asig = (not aasig) or (aasig == ha)
+            if ok_grado and ok_sec and ok_asig:
+                filtrados.append(h)
+                break
+    return filtrados
+
+
 def construir_horarios_por_curso(horarios, filtro_grado="", filtro_seccion=""):
     fgh = (filtro_grado or "").strip().lower()
     fsh = (filtro_seccion or "").strip().lower()
@@ -795,7 +822,13 @@ def inscribir_y_matricular(
         )
     )
     db.commit()
-    return RedirectResponse(url=f"/panel?ano_id={ano_escolar_id}", status_code=303)
+    from urllib.parse import urlencode
+    qs = urlencode({
+        "ano_id": ano_escolar_id,
+        "filtro_grado_horario": grado_ano.strip(),
+        "filtro_seccion_horario": seccion.strip(),
+    })
+    return RedirectResponse(url=f"/panel?{qs}", status_code=303)
 
 
 @app.post("/matriculas/{matricula_id}/actualizar")

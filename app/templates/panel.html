@@ -1164,6 +1164,64 @@
             </table>
           </div>
         </div>
+
+        <div class="box" style="margin-top:14px;">
+          <div class="box-head">
+            Horarios por Grado / A?o y Secci?n {% if usuario.rol == "docente" %}(Tu Carga Asignada){% endif %}
+          </div>
+          <div class="box-body">
+            {% if horarios_por_curso %}
+              {% for curso in horarios_por_curso %}
+                {% if curso.clases or filtro_grado_horario or filtro_seccion_horario %}
+                <div style="margin-bottom:16px; border:1px solid #cbd5e1; border-radius:6px; overflow:hidden;">
+                  <div style="background:#f1f5f9; padding:8px 12px; font-weight:600; display:flex; justify-content:space-between; align-items:center;">
+                    <span>{{ curso.titulo }}</span>
+                    <span style="font-size:12px; color:#475569;">{{ curso.clases|length }} clase(s)</span>
+                  </div>
+                  {% if curso.clases %}
+                  <div class="tbl-wrap">
+                    <table class="alboran-tbl">
+                      <thead>
+                        <tr>
+                          <th>D?a</th>
+                          <th>Bloque Horario</th>
+                          <th>Asignatura / Clase</th>
+                          <th>Aula</th>
+                          {% if usuario.rol in ["director", "coordinador"] %}
+                          <th>Acci?n</th>
+                          {% endif %}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for c in curso.clases %}
+                        <tr>
+                          <td>{{ c.dia_semana }}</td>
+                          <td>{{ c.bloque_hora }}</td>
+                          <td><strong>{{ c.asignatura }}</strong></td>
+                          <td>{{ c.aula or "?" }}</td>
+                          {% if usuario.rol in ["director", "coordinador"] %}
+                          <td>
+                            <form method="post" action="/horarios/{{ c.id }}/eliminar" style="display:inline;">
+                              <button type="submit" class="btn-bad" style="padding:2px 6px; font-size:11px;">Eliminar</button>
+                            </form>
+                          </td>
+                          {% endif %}
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                  {% else %}
+                  <div style="padding:10px 12px; font-size:13px; color:#64748b;">Sin clases registradas en este curso/secci?n.</div>
+                  {% endif %}
+                </div>
+                {% endif %}
+              {% endfor %}
+            {% else %}
+              <p style="color:#64748b; margin:0;">No hay horarios para mostrar con el filtro o carga actual.</p>
+            {% endif %}
+          </div>
+        </div>
       <div id="box-editar-usuario" class="box" style="display:none; margin-top:14px;">
         <div class="box-head">Editar Usuario Seleccionado</div>
         <div class="box-body">
