@@ -908,6 +908,34 @@ def revisar_justificacion(
     db.commit()
     return RedirectResponse(url="/panel", status_code=303)
 
+@app.post("/asistencias/{asistencia_id}/editar")
+def editar_asistencia(
+    asistencia_id: int,
+    estado: str = Form(...),
+    fecha: str = Form(""),
+    db: Session = Depends(get_db),
+    usuario: Usuario = Depends(exigir_roles("docente", "coordinador", "director")),
+):
+    registro = db.query(Asistencia).filter(Asistencia.id == asistencia_id).first()
+    if not registro:
+        raise HTTPException(status_code=404, detail="Registro de asistencia no encontrado")
+
+    estado_limpio = estado.strip()
+    if estado_limpio not in ("Presente", "Inasistente", "Retardo"):
+        raise HTTPException(status_code=400, detail="Estado de asistencia no válido")
+
+    registro.estado = estado_limpio
+    if fecha.strip():
+        registro.fecha = fecha.strip()
+    if estado_limpio == "Presente":
+        registro.estado_justificacion = "No aplica"
+    elif registro.estado_justificacion == "No aplica":
+        registro.estado_justificacion = "Sin justificar"
+
+    db.commit()
+    return RedirectResponse(url="/panel", status_code=303)
+
+
 
 @app.post("/avisos/crear")
 def crear_aviso(
