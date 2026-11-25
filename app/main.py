@@ -471,7 +471,11 @@ def panel(
     matricula_editar = next((m for m in matriculas if m.id == editar_id), None)
 
     ids_mat = [m.id for m in matriculas]
-    calificaciones = db.query(Calificacion).filter(Calificacion.matricula_id.in_(ids_mat)).all() if ids_mat else []
+    try:
+        calificaciones = db.query(Calificacion).filter(Calificacion.matricula_id.in_(ids_mat)).all() if ids_mat else []
+    except Exception:
+        db.rollback()
+        calificaciones = []
     asistencias = db.query(Asistencia).filter(Asistencia.matricula_id.in_(ids_mat)).all() if ids_mat else []
     partes = db.query(ParteDisciplinario).filter(ParteDisciplinario.matricula_id.in_(ids_mat)).all() if ids_mat else []
 
