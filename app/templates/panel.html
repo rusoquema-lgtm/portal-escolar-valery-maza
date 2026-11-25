@@ -1230,7 +1230,7 @@
           <div class="box-body">
             <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:flex-end; margin-bottom:14px;">
               <div>
-                <label class="lbl">Fecha de Clase</label>
+                <label class="lbl">Fecha Actual de Clase</label>
                 <input type="date" id="fecha-clase-asistencia" class="inp" required />
               </div>
               <div>
@@ -1250,24 +1250,19 @@
 
             <div class="tbl-wrap">
               <table class="alboran-tbl" id="tabla-pase-lista-clase">
-                <thead>
+                <thead id="thead-pase-lista-clase">
                   <tr>
-                    <th>Cédula Escolar</th>
-                    <th>Alumno</th>
-                    <th>Clase</th>
-                    <th>Asistencia (Presente / Inasistente / Retardo)</th>
-                    <th>Guardar</th>
+                    <th>Nombres y Apellidos</th>
+                    <th>Fecha Actual</th>
                   </tr>
                 </thead>
                 <tbody id="tbody-pase-lista-clase">
-                  <tr><td colspan="5">Selecciona una clase arriba para mostrar la lista de alumnos.</td></tr>
+                  <tr><td colspan="2">Selecciona una clase arriba para mostrar la lista de alumnos.</td></tr>
                 </tbody>
               </table>
             </div>
           </div>
         </div>
-        {% endif %}
-
         <div class="box">
           <div class="box-head">2. Historial de Asistencias, Edición de Estado y Justificaciones</div>
           <div class="box-body tbl-wrap">
@@ -1380,6 +1375,17 @@
               {% endfor %}
             ];
 
+            const asistenciasPrevias = [
+              {% for a in asistencias %}
+              {
+                id: {{ a.id }},
+                matriculaId: {{ a.matricula_id }},
+                fecha: {{ (a.fecha or "") | string | tojson }},
+                estado: {{ (a.estado or "Presente") | string | tojson }}
+              }{% if not loop.last %},{% endif %}
+              {% endfor %}
+            ];
+
             const clasesMap = new Map();
             for (const al of alumnosClase) {
               const clave = `${al.gradoAno} | ${al.seccion}`;
@@ -1407,9 +1413,10 @@
 
             const selector = document.getElementById("selector-clase-asistencia");
             const tarjetas = document.getElementById("tarjetas-clases-asistencia");
+            const thead = document.getElementById("thead-pase-lista-clase");
             const tbody = document.getElementById("tbody-pase-lista-clase");
 
-            if (!selector || !tarjetas || !tbody) return;
+            if (!selector || !tarjetas || !thead || !tbody) return;
 
             for (const [clave, info] of clasesMap.entries()) {
               const opt = document.createElement("option");
@@ -1430,38 +1437,83 @@
               tarjetas.appendChild(card);
             }
 
+            function renderCeldaEstado(matriculaId, fechaStr, registroExistente) {
+              if (registroExistente) {
+                const estActual = registroExistente.estado || "Presente";
+                return `
+                  <form method="post" action="/asistencias/${registroExistente.id}/editar" style="display:flex; gap:6px; align-items:center; margin:0;">
+                    <input type="hidden" name="fecha" value="${fechaStr}" />
+                    <select name="estado" class="select-estado-fila inp" style="min-width:125px;">
+                      <option value="Presente" ${estActual === "Presente" ? "selected" : ""}>Presente</option>
+                      <option value="Inasistente" ${estActual === "Inasistente" ? "selected" : ""}>Inasistente</option>
+                      <option value="Retardo" ${estActual === "Retardo" ? "selected" : ""}>Retardo</option>
+                    </select>
+                    <button type="submit" class="btn btn-sm">Guardar</button>
+                  </form>
+                `;
+              }
+              return `
+                <form method="post" action="/asistencias/registrar" style="display:flex; gap:6px; align-items:center; margin:0;">
+                  <input type="hidden" name="matricula_id" value="${matriculaId}" />
+                  <input type="hidden" name="fecha" class="campo-fecha-fila" value="${fechaStr}" />
+                  <select name="estado" class="select-estado-fila inp" style="min-width:125px;">
+                    <option value="Presente" selected>Presente</option>
+                    <option value="Inasistente">Inasistente</option>
+                    <option value="Retardo">Retardo</option>
+                  </select>
+                  <button type="submit" class="btn-save" style="padding:5px 10px; font-size:12px;">Guardar</button>
+                </form>
+              `;
+            }
+
             window.seleccionarClaseAsistencia = function(clave) {
               if (!clave || !clasesMap.has(clave)) {
-                tbody.innerHTML = '<tr><td colspan="5">Selecciona una clase arriba para mostrar la lista de alumnos.</td></tr>';
+                thead.innerHTML = '<tr><th>Nombres y Apellidos</th><th>Fecha Actual</th></tr>';
+                tbody.innerHTML = '<tr><td colspan="2">Selecciona una clase arriba para mostrar la lista de alumnos.</td></tr>';
                 return;
               }
+
               const info = clasesMap.get(clave);
-              const fechaVal = (document.getElementById("fecha-clase-asistencia") || {}).value || "";
+              const fechaActual = (fechaInput && fechaInput.value) ? fechaInput.value : "";
+              const idsAlumnos = new Set(info.alumnos.map(a => a.matriculaId));
+
+              // Fechas registradas de esta clase distintas de la fecha actual
+              const fechasSet = new Set();
+              const mapaAsist = new Map();
+              for (const reg of asistenciasPrevias) {
+                if (idsAlumnos.has(reg.matriculaId)) {
+                  mapaAsist.set(`${reg.matriculaId}__${reg.fecha}`, reg);
+                  if (reg.fecha && reg.fecha !== fechaActual) {
+                    fechasSet.add(reg.fecha);
+                  }
+                }
+              }
+              const fechasExtra = Array.from(fechasSet).sort().reverse();
+
+              let thHtml = '<tr><th>Nombres y Apellidos</th>';
+              thHtml += `<th>Fecha Actual (${fechaActual || "sin fecha"})</th>`;
+              for (const f of fechasExtra) {
+                thHtml += `<th>${f}</th>`;
+              }
+              thHtml += '</tr>';
+              thead.innerHTML = thHtml;
+
               if (!info.alumnos.length) {
-                tbody.innerHTML = '<tr><td colspan="5">No hay alumnos matriculados en esta clase.</td></tr>';
+                const cols = 2 + fechasExtra.length;
+                tbody.innerHTML = `<tr><td colspan="${cols}">No hay alumnos matriculados en esta clase.</td></tr>`;
                 return;
               }
-              tbody.innerHTML = info.alumnos.map((al) => `
-                <tr>
-                  <td>${al.cedulaEscolar || "-"}</td>
-                  <td><strong>${al.nombreCompleto}</strong></td>
-                  <td>${al.gradoAno} ${al.seccion}</td>
-                  <td>
-                    <form id="form-asis-${al.matriculaId}" method="post" action="/asistencias/registrar" style="display:flex; gap:8px; align-items:center; margin:0;">
-                      <input type="hidden" name="matricula_id" value="${al.matriculaId}" />
-                      <input type="hidden" name="fecha" class="campo-fecha-fila" value="${fechaVal}" />
-                      <select name="estado" class="select-estado-fila inp" style="min-width:135px;">
-                        <option value="Presente" selected>Presente</option>
-                        <option value="Inasistente">Inasistente</option>
-                        <option value="Retardo">Retardo</option>
-                      </select>
-                  </td>
-                  <td>
-                      <button type="submit" class="btn-save" style="padding:5px 10px; font-size:12px;">Guardar</button>
-                    </form>
-                  </td>
-                </tr>
-              `).join("");
+
+              tbody.innerHTML = info.alumnos.map((al) => {
+                const regActual = mapaAsist.get(`${al.matriculaId}__${fechaActual}`) || null;
+                let tds = `<td><strong>${al.nombreCompleto}</strong></td>`;
+                tds += `<td>${renderCeldaEstado(al.matriculaId, fechaActual, regActual)}</td>`;
+                for (const f of fechasExtra) {
+                  const regF = mapaAsist.get(`${al.matriculaId}__${f}`) || null;
+                  tds += `<td>${renderCeldaEstado(al.matriculaId, f, regF)}</td>`;
+                }
+                return `<tr>${tds}</tr>`;
+              }).join("");
             };
 
             window.marcarTodosClase = function(estadoDeseado) {
@@ -1475,6 +1527,9 @@
                 document.querySelectorAll("#tbody-pase-lista-clase .campo-fecha-fila").forEach((inp) => {
                   inp.value = fechaInput.value;
                 });
+                if (selector && selector.value) {
+                  window.seleccionarClaseAsistencia(selector.value);
+                }
               });
             }
 
