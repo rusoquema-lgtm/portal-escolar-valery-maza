@@ -1257,7 +1257,7 @@
                   </tr>
                 </thead>
                 <tbody id="tbody-pase-lista-clase">
-                  <tr><td colspan="2">Selecciona una clase arriba para mostrar la lista de alumnos.</td></tr>
+                  <tr><td colspan="2">Selecciona una clase arriba para mostrar la lista de alumnos. ${rolUsuario === "docente" && clasesMap.size === 0 ? "(No tienes carga horaria asignada en este momento)." : ""}</td></tr>
                 </tbody>
               </table>
             </div>
@@ -1365,9 +1365,13 @@
               {% endfor %}
             ];
 
-            const asignacionesClase = [
-              {% for a in (asignaciones_docente if asignaciones_docente else asignaciones_ano) %}
+            const rolUsuario = {{ (usuario.rol or "") | tojson }};
+            const idUsuarioActual = {{ usuario.id }};
+
+            const asignacionesTodas = [
+              {% for a in (asignaciones_ano if asignaciones_ano else asignaciones_docente) %}
               {
+                docenteId: {{ a.docente_id if a.docente_id is not none else "null" }},
                 gradoAno: {{ (a.grado_ano or "") | trim | tojson }},
                 seccion: {{ (a.seccion or "") | trim | tojson }},
                 asignatura: {{ (a.asignatura or "") | trim | tojson }}
@@ -1375,38 +1379,59 @@
               {% endfor %}
             ];
 
-            const asistenciasPrevias = [
-              {% for a in asistencias %}
-              {
-                id: {{ a.id }},
-                matriculaId: {{ a.matricula_id }},
-                fecha: {{ (a.fecha or "") | string | tojson }},
-                estado: {{ (a.estado or "Presente") | string | tojson }}
-              }{% if not loop.last %},{% endif %}
-              {% endfor %}
-            ];
+            const asignacionesClase = rolUsuario === "docente"
+              ? asignacionesTodas.filter(a => Number(a.docenteId) === Number(idUsuarioActual))
+              : asignacionesTodas;
+
+            const clasesPermitidas = new Set(
+              asignacionesClase.map(a => `${a.gradoAno} | ${a.seccion}`)
+            );
 
             const clasesMap = new Map();
-            for (const al of alumnosClase) {
-              const clave = `${al.gradoAno} | ${al.seccion}`;
-              if (!clasesMap.has(clave)) {
-                clasesMap.set(clave, {
-                  clave,
-                  gradoAno: al.gradoAno,
-                  seccion: al.seccion,
-                  materias: [],
-                  alumnos: []
-                });
-              }
-              clasesMap.get(clave).alumnos.push(al);
-            }
 
-            for (const asig of asignacionesClase) {
-              const clave = `${asig.gradoAno} | ${asig.seccion}`;
-              if (clasesMap.has(clave) && asig.asignatura) {
-                const entry = clasesMap.get(clave);
-                if (!entry.materias.includes(asig.asignatura)) {
-                  entry.materias.push(asig.asignatura);
+            if (rolUsuario === "docente") {
+              for (const asig of asignacionesClase) {
+                const clave = `${asig.gradoAno} | ${asig.seccion}`;
+                if (!clasesMap.has(clave)) {
+                  clasesMap.set(clave, {
+                    clave,
+                    gradoAno: asig.gradoAno,
+                    seccion: asig.seccion,
+                    materias: [],
+                    alumnos: []
+                  });
+                }
+                if (asig.asignatura && !clasesMap.get(clave).materias.includes(asig.asignatura)) {
+                  clasesMap.get(clave).materias.push(asig.asignatura);
+                }
+              }
+              for (const al of alumnosClase) {
+                const clave = `${al.gradoAno} | ${al.seccion}`;
+                if (clasesPermitidas.has(clave) && clasesMap.has(clave)) {
+                  clasesMap.get(clave).alumnos.push(al);
+                }
+              }
+            } else {
+              for (const al of alumnosClase) {
+                const clave = `${al.gradoAno} | ${al.seccion}`;
+                if (!clasesMap.has(clave)) {
+                  clasesMap.set(clave, {
+                    clave,
+                    gradoAno: al.gradoAno,
+                    seccion: al.seccion,
+                    materias: [],
+                    alumnos: []
+                  });
+                }
+                clasesMap.get(clave).alumnos.push(al);
+              }
+              for (const asig of asignacionesClase) {
+                const clave = `${asig.gradoAno} | ${asig.seccion}`;
+                if (clasesMap.has(clave) && asig.asignatura) {
+                  const entry = clasesMap.get(clave);
+                  if (!entry.materias.includes(asig.asignatura)) {
+                    entry.materias.push(asig.asignatura);
+                  }
                 }
               }
             }
