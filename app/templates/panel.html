@@ -1689,6 +1689,7 @@
 
       <!-- ASIGNACIÓN DE DOCENTES A MATERIAS Y SECCIONES -->
       {% if usuario.rol in ["director", "coordinador"] and ano_seleccionado %}
+      {% endif %}
       <section id="view-asignaciones" class="section-view">
         <div class="box">
           <div class="box-head">Asignar Materia, Grado y Sección a Docente ({{ ano_seleccionado.nombre }})</div>
