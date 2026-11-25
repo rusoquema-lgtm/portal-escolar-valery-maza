@@ -862,6 +862,241 @@
         </div>
         {% endif %}
 
+        {% if usuario.rol in ["docente", "director"] %}
+        <div class="box no-print" style="margin-bottom:14px;">
+          <div class="box-head">1. Seleccionar Clase y Colocar Calificaciones por Fecha Actual</div>
+          <div class="box-body">
+            <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:flex-end; margin-bottom:14px;">
+              <div>
+                <label class="lbl">Fecha Actual de Evaluaci?n</label>
+                <input type="date" id="fecha-clase-evaluacion" class="inp" required />
+              </div>
+              <div>
+                <label class="lbl">Clase (Grado/A?o, Secci?n y Asignatura)</label>
+                <select id="selector-clase-evaluacion" class="inp" onchange="seleccionarClaseEvaluacion(this.value)">
+                  <option value="">-- Elige una clase --</option>
+                </select>
+              </div>
+              <div>
+                <label class="lbl">Momento / Lapso</label>
+                <select id="lapso-clase-evaluacion" class="inp" onchange="refrescarTablaEvaluacion()">
+                  <option value="1er Momento">1er Momento</option>
+                  <option value="2do Momento">2do Momento</option>
+                  <option value="3er Momento">3er Momento</option>
+                </select>
+              </div>
+            </div>
+
+            <div id="tarjetas-clases-evaluacion" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(210px, 1fr)); gap:10px; margin-bottom:16px;"></div>
+
+            <div class="tbl-wrap">
+              <table class="alboran-tbl" id="tabla-evaluacion-clase">
+                <thead id="thead-evaluacion-clase">
+                  <tr>
+                    <th>Nombres y Apellidos</th>
+                    <th>Fecha Actual</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-evaluacion-clase">
+                  <tr><td colspan="2">Selecciona una clase arriba para mostrar la lista de alumnos.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <script>
+          (function() {
+            const fechaEvalInput = document.getElementById("fecha-clase-evaluacion");
+            const selectorEval = document.getElementById("selector-clase-evaluacion");
+            const lapsoEval = document.getElementById("lapso-clase-evaluacion");
+            const tarjetasEval = document.getElementById("tarjetas-clases-evaluacion");
+            const theadEval = document.getElementById("thead-evaluacion-clase");
+            const tbodyEval = document.getElementById("tbody-evaluacion-clase");
+            if (!fechaEvalInput || !selectorEval || !tbodyEval) return;
+
+            if (!fechaEvalInput.value) {
+              const hoy = new Date();
+              const yyyy = hoy.getFullYear();
+              const mm = String(hoy.getMonth() + 1).padStart(2, "0");
+              const dd = String(hoy.getDate()).padStart(2, "0");
+              fechaEvalInput.value = `${yyyy}-${mm}-${dd}`;
+            }
+
+            const rolEval = {{ usuario.rol | tojson }};
+            const asignacionesEval = [
+              {% for a in asignaciones_docente %}
+              {
+                gradoAno: {{ (a.grado_ano or "") | tojson }},
+                seccion: {{ (a.seccion or "") | tojson }},
+                asignatura: {{ (a.asignatura or "") | tojson }}
+              }{% if not loop.last %},{% endif %}
+              {% endfor %}
+            ];
+            const asignaturasBaseEval = {{ asignaturas_base | tojson }};
+            const matriculasEval = [
+              {% for m in matriculas_cuaderno %}
+              {
+                matriculaId: {{ m.id }},
+                nombre: {{ ((m.estudiante.nombres if m.estudiante else "") ~ " " ~ (m.estudiante.apellidos if m.estudiante else "")) | trim | tojson }},
+                gradoAno: {{ (m.grado_ano or "") | tojson }},
+                seccion: {{ (m.seccion or "") | tojson }}
+              }{% if not loop.last %},{% endif %}
+              {% endfor %}
+            ];
+            const calificacionesPrevias = [
+              {% for c in calificaciones %}
+              {
+                id: {{ c.id }},
+                matriculaId: {{ c.matricula_id }},
+                asignatura: {{ (c.asignatura or "") | tojson }},
+                lapso: {{ (c.lapso or "1er Momento") | tojson }},
+                nota20: {{ c.nota_20 if c.nota_20 is not none else "null" }},
+                fecha: {{ (c.fecha or "") | tojson }}
+              }{% if not loop.last %},{% endif %}
+              {% endfor %}
+            ];
+
+            const clasesEvalMap = new Map();
+            const norm = (s) => (s || "").trim().toLowerCase();
+
+            if (rolEval === "docente") {
+              for (const a of asignacionesEval) {
+                const gNorm = norm(a.gradoAno);
+                const sNorm = norm(a.seccion);
+                const asig = (a.asignatura || "").trim() || "Asignatura";
+                const alumnosClase = matriculasEval.filter((m) => {
+                  const okG = !gNorm || norm(m.gradoAno) === gNorm;
+                  const okS = !sNorm || sNorm === "todas" || norm(m.seccion) === sNorm;
+                  return okG && okS;
+                });
+                const clave = `${a.gradoAno}__${a.seccion}__${asig}`;
+                clasesEvalMap.set(clave, {
+                  gradoAno: a.gradoAno,
+                  seccion: a.seccion,
+                  asignatura: asig,
+                  alumnos: alumnosClase
+                });
+              }
+            } else {
+              const gruposCurso = new Map();
+              for (const m of matriculasEval) {
+                const k = `${norm(m.gradoAno)}__${norm(m.seccion)}`;
+                if (!gruposCurso.has(k)) {
+                  gruposCurso.set(k, { gradoAno: m.gradoAno, seccion: m.seccion, alumnos: [] });
+                }
+                gruposCurso.get(k).alumnos.push(m);
+              }
+              for (const [, grp] of gruposCurso.entries()) {
+                for (const asig of asignaturasBaseEval) {
+                  const clave = `${grp.gradoAno}__${grp.seccion}__${asig}`;
+                  clasesEvalMap.set(clave, {
+                    gradoAno: grp.gradoAno,
+                    seccion: grp.seccion,
+                    asignatura: asig,
+                    alumnos: grp.alumnos
+                  });
+                }
+              }
+            }
+
+            if (tarjetasEval) tarjetasEval.innerHTML = "";
+            for (const [clave, info] of clasesEvalMap.entries()) {
+              const opt = document.createElement("option");
+              opt.value = clave;
+              opt.textContent = `${info.gradoAno} "${info.seccion}" ? ${info.asignatura} (${info.alumnos.length})`;
+              selectorEval.appendChild(opt);
+
+              if (tarjetasEval) {
+                const card = document.createElement("button");
+                card.type = "button";
+                card.className = "btn btn-sm";
+                card.style.cssText = "text-align:left; padding:10px; display:block; width:100%;";
+                card.innerHTML = `<strong>${info.gradoAno} "${info.seccion}"</strong><br><small>${info.asignatura} ? ${info.alumnos.length} alumnos</small>`;
+                card.onclick = () => {
+                  selectorEval.value = clave;
+                  window.seleccionarClaseEvaluacion(clave);
+                };
+                tarjetasEval.appendChild(card);
+              }
+            }
+
+            window.seleccionarClaseEvaluacion = function(clave) {
+              if (!clave || !clasesEvalMap.has(clave)) {
+                theadEval.innerHTML = '<tr><th>Nombres y Apellidos</th><th>Fecha Actual</th></tr>';
+                tbodyEval.innerHTML = '<tr><td colspan="2">Selecciona una clase arriba para mostrar la lista de alumnos.</td></tr>';
+                return;
+              }
+              const info = clasesEvalMap.get(clave);
+              const fechaActual = fechaEvalInput.value || "";
+              const lapsoActual = (lapsoEval && lapsoEval.value) ? lapsoEval.value : "1er Momento";
+              const asigNorm = norm(info.asignatura);
+
+              theadEval.innerHTML = `<tr><th>Nombres y Apellidos</th><th>Fecha Actual (${fechaActual || "sin fecha"}) ? ${info.asignatura}</th></tr>`;
+
+              if (!info.alumnos.length) {
+                tbodyEval.innerHTML = '<tr><td colspan="2">No hay alumnos matriculados en esta clase.</td></tr>';
+                return;
+              }
+
+              let rowsHtml = "";
+              for (const al of info.alumnos) {
+                const prev = calificacionesPrevias.find(
+                  (c) => c.matriculaId === al.matriculaId
+                    && norm(c.asignatura) === asigNorm
+                    && (!fechaActual || !c.fecha || c.fecha === fechaActual)
+                );
+                if (prev) {
+                  rowsHtml += `
+                    <tr>
+                      <td><strong>${al.nombre}</strong></td>
+                      <td>
+                        <form method="post" action="/calificaciones/${prev.id}/editar" style="display:flex; gap:6px; align-items:center; margin:0;">
+                          <input type="hidden" name="fecha" class="campo-fecha-eval" value="${fechaActual}" />
+                          <input type="number" name="nota_20" step="0.01" min="1" max="20" value="${prev.nota20 ?? ""}" required class="inp" style="width:100px;" placeholder="1 - 20" />
+                          <button type="submit" class="btn btn-sm">Actualizar</button>
+                        </form>
+                      </td>
+                    </tr>
+                  `;
+                } else {
+                  rowsHtml += `
+                    <tr>
+                      <td><strong>${al.nombre}</strong></td>
+                      <td>
+                        <form method="post" action="/calificaciones/guardar" style="display:flex; gap:6px; align-items:center; margin:0;">
+                          <input type="hidden" name="matricula_id" value="${al.matriculaId}" />
+                          <input type="hidden" name="asignatura" value="${info.asignatura}" />
+                          <input type="hidden" name="lapso" class="campo-lapso-eval" value="${lapsoActual}" />
+                          <input type="hidden" name="fecha" class="campo-fecha-eval" value="${fechaActual}" />
+                          <input type="number" name="nota_20" step="0.01" min="1" max="20" required class="inp" style="width:100px;" placeholder="Nota (1-20)" />
+                          <button type="submit" class="btn-save" style="padding:5px 10px; font-size:12px;">Guardar</button>
+                        </form>
+                      </td>
+                    </tr>
+                  `;
+                }
+              }
+              tbodyEval.innerHTML = rowsHtml;
+            };
+
+            window.refrescarTablaEvaluacion = function() {
+              if (selectorEval && selectorEval.value) {
+                window.seleccionarClaseEvaluacion(selectorEval.value);
+              }
+            };
+
+            fechaEvalInput.addEventListener("change", window.refrescarTablaEvaluacion);
+
+            if (clasesEvalMap.size > 0) {
+              const primera = clasesEvalMap.keys().next().value;
+              selectorEval.value = primera;
+              window.seleccionarClaseEvaluacion(primera);
+            }
+          })();
+        </script>
+        {% endif %}
+
         <div class="box">
           <div class="box-head">Cuaderno de Evaluación — Matriz por Momento y Definitiva</div>
           <div class="box-body tbl-wrap">

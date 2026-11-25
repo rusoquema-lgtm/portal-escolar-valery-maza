@@ -1,3 +1,4 @@
+from datetime import date
 ﻿from collections import defaultdict
 from pathlib import Path
 from uuid import uuid4
@@ -23,6 +24,12 @@ from .models import (
 )
 
 Base.metadata.create_all(bind=engine)
+try:
+    from sqlalchemy import text
+    with engine.begin() as conn:
+        conn.execute(text("ALTER TABLE calificaciones ADD COLUMN IF NOT EXISTS fecha VARCHAR(20)"))
+except Exception:
+    pass
 
 FOTOS_DIR = Path("app/static/fotos_alumnos")
 FOTOS_DIR.mkdir(parents=True, exist_ok=True)
@@ -920,22 +927,45 @@ def actualizar_matricula_y_alumno(
 def guardar_calificacion(
     matricula_id: int = Form(...),
     asignatura: str = Form(...),
-    lapso: str = Form(...),
+    lapso: str = Form("1er Momento"),
     nota_20: float = Form(...),
+    fecha: str = Form(""),
     db: Session = Depends(get_db),
     usuario: Usuario = Depends(exigir_roles("docente", "director")),
 ):
     if nota_20 < 1 or nota_20 > 20:
         raise HTTPException(status_code=400, detail="Nota fuera de rango (1 a 20)")
+    fecha_limpia = (fecha or "").strip() or date.today().isoformat()
     db.add(
         Calificacion(
             matricula_id=matricula_id,
             docente_id=usuario.id,
             asignatura=asignatura.strip(),
-            lapso=lapso.strip(),
+            lapso=(lapso or "1er Momento").strip(),
             nota_20=nota_20,
+            fecha=fecha_limpia,
         )
     )
+    db.commit()
+    return RedirectResponse(url="/panel", status_code=303)
+
+
+@app.post("/calificaciones/{calificacion_id}/editar")
+def editar_calificacion(
+    calificacion_id: int,
+    nota_20: float = Form(...),
+    fecha: str = Form(""),
+    db: Session = Depends(get_db),
+    usuario: Usuario = Depends(exigir_roles("docente", "director")),
+):
+    if nota_20 < 1 or nota_20 > 20:
+        raise HTTPException(status_code=400, detail="Nota fuera de rango (1 a 20)")
+    reg = db.query(Calificacion).filter(Calificacion.id == calificacion_id).first()
+    if not reg:
+        raise HTTPException(status_code=404, detail="Calificaci?n no encontrada")
+    reg.nota_20 = nota_20
+    if (fecha or "").strip():
+        reg.fecha = fecha.strip()
     db.commit()
     return RedirectResponse(url="/panel", status_code=303)
 
