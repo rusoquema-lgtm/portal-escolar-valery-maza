@@ -1369,7 +1369,7 @@
             const idUsuarioActual = {{ usuario.id }};
 
             const asignacionesTodas = [
-              {% for a in (asignaciones_ano if asignaciones_ano else asignaciones_docente) %}
+              {% for a in (asignaciones_ano if asignaciones_ano else (asignaciones_docente or [])) %}
               {
                 docenteId: {{ a.docente_id if a.docente_id is not none else "null" }},
                 gradoAno: {{ (a.grado_ano or "") | trim | tojson }},
