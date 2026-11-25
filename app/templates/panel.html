@@ -1706,6 +1706,14 @@
                   {% endfor %}
                 </select>
               </div>
+              <div>
+                <label class="lbl">Asignatura *</label>
+                <select name="asignatura" required>
+                  {% for mat in asignaturas_base %}
+                  <option value="{{ mat }}">{{ mat }}</option>
+                  {% endfor %}
+                </select>
+              </div>
               <div style="grid-column: span 2;">
                 <label class="lbl">Grados / Años (puedes marcar uno o varios juntos) *</label>
                 <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px;">
