@@ -816,51 +816,6 @@
         {% if usuario.rol in ["docente", "director"] %}
         <div class="box no-print">
           <div class="box-head">Introducir Calificación (Escala 1 - 20)</div>
-          <div class="box-body">
-            <form method="post" action="/calificaciones/guardar" class="grid-inputs">
-              <div>
-                <label class="lbl">Alumno / Matrícula</label>
-                <select name="matricula_id" required>
-                  {% for m in matriculas_cuaderno %}
-                  <option value="{{ m.id }}">{{ m.estudiante.nombres }} {{ m.estudiante.apellidos }} — {{ m.grado_ano }} "{{ m.seccion }}"</option>
-                  {% endfor %}
-                </select>
-              </div>
-              <div>
-                <label class="lbl">Asignatura</label>
-                {% if usuario.rol == "docente" and asignaciones_docente %}
-                <select name="asignatura" required>
-                  {% for a in (asignaciones_docente or []) %}
-                  <option value="{{ a.asignatura }}">{{ a.asignatura }} ({{ a.grado_ano }} "{{ a.seccion }}")</option>
-                  {% endfor %}
-                </select>
-                {% else %}
-                <select name="asignatura" required>
-                  {% for mat in asignaturas_base %}
-                  <option value="{{ mat }}">{{ mat }}</option>
-                  {% endfor %}
-                </select>
-                {% endif %}
-              </div>
-              <div>
-                <label class="lbl">Momento / Lapso</label>
-                <select name="lapso" required>
-                  <option value="1er Momento">1er Momento</option>
-                  <option value="2do Momento">2do Momento</option>
-                  <option value="3er Momento">3er Momento</option>
-                </select>
-              </div>
-              <div>
-                <label class="lbl">Calificación (1 - 20)</label>
-                <input type="number" step="0.1" min="1" max="20" name="nota_20" placeholder="Ej. 16.0" required />
-              </div>
-              <div>
-                <button type="submit" class="btn-save" style="width:100%;">Registrar Nota</button>
-              </div>
-            </form>
-          </div>
-        </div>
-        {% endif %}
 
         {% if usuario.rol in ["docente", "director"] %}
         <div class="box no-print" style="margin-bottom:14px;">
@@ -1499,7 +1454,7 @@
                   </tr>
                 </thead>
                 <tbody id="tbody-pase-lista-clase">
-                  <tr><td colspan="2">Selecciona una clase arriba para mostrar la lista de alumnos. ${rolUsuario === "docente" && clasesMap.size === 0 ? "(No tienes carga horaria asignada en este momento)." : ""}</td></tr>
+                  <tr><td colspan="2">Selecciona una clase arriba para mostrar la lista de alumnos.</td></tr>
                 </tbody>
               </table>
             </div>
