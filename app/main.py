@@ -3,6 +3,7 @@ from collections import defaultdict
 from pathlib import Path
 from uuid import uuid4
 from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -36,6 +37,14 @@ FOTOS_DIR = Path("app/static/fotos_alumnos")
 FOTOS_DIR.mkdir(parents=True, exist_ok=True)
 
 app = FastAPI(title="Portal Educativo â€” U.E Rafael Valery Maza")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["*"],
+)
+
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 templates = Jinja2Templates(directory="app/templates")
 
@@ -928,6 +937,43 @@ def actualizar_matricula_y_alumno(
     return RedirectResponse(url=f"/panel?ano_id={matricula.ano_escolar_id}", status_code=303)
 
 
+
+@app.post("/matriculas/{matricula_id}/baja")
+def dar_de_baja_matricula(
+    matricula_id: int,
+    db: Session = Depends(get_db),
+    _: Usuario = Depends(exigir_roles("director", "coordinador")),
+):
+    matricula = db.query(MatriculaAnual).filter(MatriculaAnual.id == matricula_id).first()
+    if not matricula:
+        raise HTTPException(status_code=404, detail="Matr?cula no encontrada")
+
+    ano_id = matricula.ano_escolar_id
+    matricula.estatus_cierre = "baja"
+    db.commit()
+    destino = f"/panel?ano_id={ano_id}" if ano_id else "/panel"
+    return RedirectResponse(url=destino, status_code=303)
+
+
+@app.post("/matriculas/{matricula_id}/eliminar")
+def eliminar_matricula(
+    matricula_id: int,
+    db: Session = Depends(get_db),
+    _: Usuario = Depends(exigir_roles("director", "coordinador")),
+):
+    matricula = db.query(MatriculaAnual).filter(MatriculaAnual.id == matricula_id).first()
+    if not matricula:
+        raise HTTPException(status_code=404, detail="Matr?cula no encontrada")
+
+    ano_id = matricula.ano_escolar_id
+    db.query(Calificacion).filter(Calificacion.matricula_id == matricula_id).delete(synchronize_session=False)
+    db.query(Asistencia).filter(Asistencia.matricula_id == matricula_id).delete(synchronize_session=False)
+    db.query(ParteDisciplinario).filter(ParteDisciplinario.matricula_id == matricula_id).delete(synchronize_session=False)
+    db.delete(matricula)
+    db.commit()
+    destino = f"/panel?ano_id={ano_id}" if ano_id else "/panel"
+    return RedirectResponse(url=destino, status_code=303)
+
 @app.post("/calificaciones/guardar")
 def guardar_calificacion(
     matricula_id: int = Form(...),
@@ -1157,3 +1203,120 @@ def registrar_parte(
     return RedirectResponse(url="/panel", status_code=303)
 
 
+
+
+@app.post("/api/public/matriculas")
+async def inscribir_desde_web_publica(
+    request: Request,
+    db: Session = Depends(get_db),
+):
+    content_type = (request.headers.get("content-type") or "").lower()
+    if "application/json" in content_type:
+        data = await request.json()
+    else:
+        form = await request.form()
+        data = dict(form)
+
+    cedula_escolar = str(data.get("cedula_escolar") or "").strip()
+    nombres = str(data.get("nombres") or "").strip()
+    apellidos = str(data.get("apellidos") or "").strip()
+    grado_ano = str(data.get("grado_ano") or "").strip()
+    seccion = str(data.get("seccion") or "A").strip() or "A"
+
+    if not cedula_escolar or not nombres or not apellidos or not grado_ano:
+        raise HTTPException(
+            status_code=400,
+            detail="Faltan campos obligatorios: cedula_escolar, nombres, apellidos y grado_ano",
+        )
+
+    anos = db.query(AnoEscolar).order_by(AnoEscolar.id.desc()).all()
+    ano_activo = next((a for a in anos if a.activo), anos[0] if anos else None)
+    if not ano_activo:
+        raise HTTPException(status_code=400, detail="No hay un a?o escolar configurado")
+
+    sexo = str(data.get("sexo") or "").strip() or None
+    nombre_madre_padre = str(data.get("nombre_madre_padre") or "").strip() or None
+    rep_legal = str(data.get("representante_legal") or nombre_madre_padre or "").strip() or None
+    numero_contacto = str(data.get("numero_contacto") or "").strip() or None
+    correo_personal = str(data.get("correo_personal") or "").strip() or None
+    alergias = str(data.get("alergias") or "").strip() or None
+    direccion = str(data.get("direccion") or "").strip() or None
+
+    rep_user = (
+        db.query(Usuario).filter(Usuario.rol == "representante").order_by(Usuario.id.asc()).first()
+        or db.query(Usuario).order_by(Usuario.id.asc()).first()
+    )
+    if not rep_user:
+        raise HTTPException(
+            status_code=400,
+            detail="No existe un usuario representante o base en el sistema para asignar representante_id",
+        )
+
+    est = db.query(Estudiante).filter(Estudiante.cedula_escolar == cedula_escolar).first()
+    if not est:
+        est = Estudiante(
+            cedula_escolar=cedula_escolar,
+            nombres=nombres,
+            apellidos=apellidos,
+            sexo=sexo,
+            nombre_madre_padre=nombre_madre_padre,
+            representante_legal=rep_legal,
+            numero_contacto=numero_contacto,
+            correo_personal=correo_personal,
+            alergias=alergias,
+            direccion=direccion,
+            representante_id=rep_user.id,
+        )
+        db.add(est)
+        db.flush()
+    else:
+        est.nombres = nombres
+        est.apellidos = apellidos
+        if sexo:
+            est.sexo = sexo
+        if nombre_madre_padre:
+            est.nombre_madre_padre = nombre_madre_padre
+        if rep_legal:
+            est.representante_legal = rep_legal
+        if numero_contacto:
+            est.numero_contacto = numero_contacto
+        if correo_personal:
+            est.correo_personal = correo_personal
+        if alergias is not None:
+            est.alergias = alergias or None
+        if direccion:
+            est.direccion = direccion
+        if not est.representante_id:
+            est.representante_id = rep_user.id
+
+    matricula_existente = (
+        db.query(MatriculaAnual)
+        .filter(
+            MatriculaAnual.estudiante_id == est.id,
+            MatriculaAnual.ano_escolar_id == ano_activo.id,
+        )
+        .first()
+    )
+    if matricula_existente:
+        matricula_existente.grado_ano = grado_ano
+        matricula_existente.seccion = seccion
+        matricula_id = matricula_existente.id
+    else:
+        nueva_mat = MatriculaAnual(
+            estudiante_id=est.id,
+            ano_escolar_id=ano_activo.id,
+            grado_ano=grado_ano,
+            seccion=seccion,
+        )
+        db.add(nueva_mat)
+        db.flush()
+        matricula_id = nueva_mat.id
+
+    db.commit()
+    return {
+        "ok": True,
+        "mensaje": "Matr?cula registrada en el sistema Albor?n",
+        "matricula_id": matricula_id,
+        "estudiante_id": est.id,
+        "ano_escolar": ano_activo.nombre,
+    }

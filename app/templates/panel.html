@@ -600,7 +600,19 @@
                   <td>{{ m.grado_ano }} "{{ m.seccion }}"</td>
                   {% if usuario.rol in ["director", "coordinador"] %}
                   <td>
-                    <a class="btn-edit" href="/panel?ano_id={{ ano_seleccionado.id if ano_seleccionado else '' }}&editar_id={{ m.id }}">Editar</a>
+                    <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+                      <a class="btn-edit" href="/panel?ano_id={{ ano_seleccionado.id if ano_seleccionado else '' }}&editar_id={{ m.id }}">Editar</a>
+                      {% if m.estatus_cierre == "baja" %}
+                        <span style="font-size:0.78rem; font-weight:700; color:#b42318; background:#fef3f2; padding:2px 8px; border-radius:999px;">De baja</span>
+                      {% else %}
+                        <form method="post" action="/matriculas/{{ m.id }}/baja" style="display:inline; margin:0;" onsubmit="return confirm('?Dar de baja la matr?cula de {{ m.estudiante.nombres }} {{ m.estudiante.apellidos }}?');">
+                          <button type="submit" class="btn-cancel" style="padding:4px 8px; font-size:0.8rem;">Dar de baja</button>
+                        </form>
+                      {% endif %}
+                      <form method="post" action="/matriculas/{{ m.id }}/eliminar" style="display:inline; margin:0;" onsubmit="return confirm('?Eliminar permanentemente esta matr?cula y sus registros asociados?');">
+                        <button type="submit" class="btn-cancel" style="padding:4px 8px; font-size:0.8rem; color:#b42318; border-color:#fecdca;">Eliminar</button>
+                      </form>
+                    </div>
                   </td>
                   {% endif %}
                 </tr>
