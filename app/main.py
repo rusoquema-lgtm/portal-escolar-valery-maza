@@ -511,8 +511,8 @@ def asignar_docente_materia(
     # Secciones conocidas en el año escolar por grado/año
     secciones_por_grado: dict[str, list[str]] = {}
     mats = (
-        db.query(Matricula.grado_ano, Matricula.seccion)
-        .filter(Matricula.ano_escolar_id == ano_escolar_id)
+        db.query(MatriculaAnual.grado_ano, MatriculaAnual.seccion)
+        .filter(MatriculaAnual.ano_escolar_id == ano_escolar_id)
         .all()
     )
     for g_val, s_val in mats:
