@@ -853,7 +853,7 @@
                   </tr>
                 </thead>
                 <tbody id="tbody-evaluacion-clase">
-                  <tr><td colspan="2">Selecciona una clase arriba para mostrar la lista de alumnos.</td></tr>
+                  <tr><td colspan="2">{% if usuario.rol == "docente" %}Selecciona una de tus clases asignadas arriba para mostrar la lista de alumnos.{% else %}Selecciona una clase arriba para mostrar la lista de alumnos.{% endif %}</td></tr>
                 </tbody>
               </table>
             </div>
