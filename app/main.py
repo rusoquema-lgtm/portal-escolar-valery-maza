@@ -55,17 +55,7 @@ CURSOS_BASE = [
     ("4to AÃ±o", "B"),
     ("4to AÃ±o", "C"),
 ]
-ASIGNATURAS_BASE = [
-    "CASTELLANO",
-    "MATEMÃTICAS",
-    "CIENCIAS NATURALES",
-    "GHC: GEOGRAFÃA E HISTORIA",
-    "QUÃMICA",
-    "FÃSICA",
-    "ARTE Y PATRIMONIO",
-    "EDUCACIÃ“N FÃSICA",
-    "INGLÃ‰S",
-]
+ASIGNATURAS_BASE = ['CASTELLANO', 'MATEMÃ\x81TICAS', 'CIENCIAS NATURALES', 'GHC: GEOGRAFÃ\x8dA E HISTORIA', 'QUÃ\x8dMICA', 'FÃ\x8dSICA', 'ARTE Y PATRIMONIO', 'EDUCACIÃ“N FÃ\x8dSICA', 'INGLÃ‰S', 'ORIENTACIÓN', 'GCRP', 'FSN', 'BIOLOGÍA']
 
 NOMBRE_ESCUELA_DEFECTO = "U.E Rafael Valery Maza"
 UBICACION_ESCUELA_DEFECTO = "Pedregales, Estado Nueva Esparta, Venezuela"
