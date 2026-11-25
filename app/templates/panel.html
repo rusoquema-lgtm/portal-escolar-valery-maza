@@ -775,7 +775,7 @@
           <div class="box-head">Mis Materias y Secciones Asignadas ({{ ano_seleccionado.nombre if ano_seleccionado else "" }})</div>
           <div class="box-body">
             {% if asignaciones_docente %}
-              {% for a in asignaciones_docente %}
+              {% for a in (asignaciones_docente or []) %}
                 <span class="rol-pill" style="background:#0f3d68; margin-right:6px;">{{ a.asignatura }} — {{ a.grado_ano }} "{{ a.seccion }}"</span>
               {% endfor %}
             {% else %}
@@ -830,7 +830,7 @@
                 <label class="lbl">Asignatura</label>
                 {% if usuario.rol == "docente" and asignaciones_docente %}
                 <select name="asignatura" required>
-                  {% for a in asignaciones_docente %}
+                  {% for a in (asignaciones_docente or []) %}
                   <option value="{{ a.asignatura }}">{{ a.asignatura }} ({{ a.grado_ano }} "{{ a.seccion }}")</option>
                   {% endfor %}
                 </select>
@@ -925,7 +925,7 @@
 
             const rolEval = {{ usuario.rol | tojson }};
             const asignacionesEval = [
-              {% for a in asignaciones_docente %}
+              {% for a in (asignaciones_docente or []) %}
               {
                 gradoAno: {{ (a.grado_ano or "") | tojson }},
                 seccion: {{ (a.seccion or "") | tojson }},
