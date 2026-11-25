@@ -1,4 +1,4 @@
-from collections import defaultdict
+﻿from collections import defaultdict
 from pathlib import Path
 from uuid import uuid4
 from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, UploadFile
@@ -27,12 +27,12 @@ Base.metadata.create_all(bind=engine)
 FOTOS_DIR = Path("app/static/fotos_alumnos")
 FOTOS_DIR.mkdir(parents=True, exist_ok=True)
 
-app = FastAPI(title="Portal Educativo — U.E Rafael Valery Maza")
+app = FastAPI(title="Portal Educativo â€” U.E Rafael Valery Maza")
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 templates = Jinja2Templates(directory="app/templates")
 
 LAPSOS_ORDEN = ["1er Momento", "2do Momento", "3er Momento"]
-DIAS_SEMANA = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes"]
+DIAS_SEMANA = ["Lunes", "Martes", "MiÃ©rcoles", "Jueves", "Viernes"]
 BLOQUES_BASE = [
     "12:15 PM - 01:35 PM",
     "01:35 PM - 02:50 PM",
@@ -40,31 +40,31 @@ BLOQUES_BASE = [
     "04:10 PM - 05:20 PM",
 ]
 CURSOS_BASE = [
-    ("1er Año", "A"),
-    ("1er Año", "B"),
-    ("1er Año", "C"),
-    ("2do Año", "A"),
-    ("2do Año", "B"),
-    ("2do Año", "C"),
-    ("2do Año", "D"),
-    ("3er Año", "A"),
-    ("3er Año", "B"),
-    ("3er Año", "C"),
-    ("3er Año", "D"),
-    ("4to Año", "A"),
-    ("4to Año", "B"),
-    ("4to Año", "C"),
+    ("1er AÃ±o", "A"),
+    ("1er AÃ±o", "B"),
+    ("1er AÃ±o", "C"),
+    ("2do AÃ±o", "A"),
+    ("2do AÃ±o", "B"),
+    ("2do AÃ±o", "C"),
+    ("2do AÃ±o", "D"),
+    ("3er AÃ±o", "A"),
+    ("3er AÃ±o", "B"),
+    ("3er AÃ±o", "C"),
+    ("3er AÃ±o", "D"),
+    ("4to AÃ±o", "A"),
+    ("4to AÃ±o", "B"),
+    ("4to AÃ±o", "C"),
 ]
 ASIGNATURAS_BASE = [
     "CASTELLANO",
-    "MATEMÁTICAS",
+    "MATEMÃTICAS",
     "CIENCIAS NATURALES",
-    "GHC: GEOGRAFÍA E HISTORIA",
-    "QUÍMICA",
-    "FÍSICA",
+    "GHC: GEOGRAFÃA E HISTORIA",
+    "QUÃMICA",
+    "FÃSICA",
     "ARTE Y PATRIMONIO",
-    "EDUCACIÓN FÍSICA",
-    "INGLÉS",
+    "EDUCACIÃ“N FÃSICA",
+    "INGLÃ‰S",
 ]
 
 NOMBRE_ESCUELA_DEFECTO = "U.E Rafael Valery Maza"
@@ -138,7 +138,7 @@ def calcular_boletin_matricula(db: Session, matricula_id: int):
                 "asignatura": materia,
                 "notas": lista_notas,
                 "definitiva": definitiva,
-                "estado": "Aprobada" if aprobada else "Revisión / Aplazada",
+                "estado": "Aprobada" if aprobada else "RevisiÃ³n / Aplazada",
             }
         )
 
@@ -148,7 +148,7 @@ def calcular_boletin_matricula(db: Session, matricula_id: int):
     elif reprobadas == 0 and promedio_general >= 10.0:
         condicion = "Promovido / Aprobado"
     elif reprobadas <= 2:
-        condicion = "Revisión / Materia Pendiente"
+        condicion = "RevisiÃ³n / Materia Pendiente"
     else:
         condicion = "Repitiente"
 
@@ -186,7 +186,7 @@ def construir_matriz_cuaderno(matriculas, calificaciones, asignaciones_permitida
                 {
                     "matricula": m,
                     "estudiante": m.estudiante,
-                    "asignatura": "—",
+                    "asignatura": "â€”",
                     "m1": None,
                     "m2": None,
                     "m3": None,
@@ -212,7 +212,7 @@ def construir_matriz_cuaderno(matriculas, calificaciones, asignaciones_permitida
             estado = (
                 "Pendiente"
                 if definitiva is None
-                else ("Aprobado" if definitiva >= 10.0 else "Revisión")
+                else ("Aprobado" if definitiva >= 10.0 else "RevisiÃ³n")
             )
 
             filas.append(
@@ -333,7 +333,7 @@ def login(
     usuario = db.query(Usuario).filter(Usuario.cedula == cedula.strip()).first()
     if not usuario or not verify_password(password, usuario.password_hash) or not usuario.activo:
         return templates.TemplateResponse(
-            request, "login.html", {"error": "Cédula o contraseña incorrecta", "centro": centro}
+            request, "login.html", {"error": "CÃ©dula o contraseÃ±a incorrecta", "centro": centro}
         )
     token = crear_token({"sub": usuario.cedula, "rol": usuario.rol})
     resp = RedirectResponse(url="/panel", status_code=303)
@@ -548,6 +548,77 @@ def guardar_centro(
     db.commit()
     return RedirectResponse(url="/panel", status_code=303)
 
+@app.post("/usuarios/{usuario_id}/editar")
+def editar_usuario(
+    usuario_id: int,
+    cedula: str = Form(...),
+    nombre_completo: str = Form(...),
+    rol: str = Form(...),
+    activo: str = Form("true"),
+    password: str = Form(""),
+    db: Session = Depends(get_db),
+    director: Usuario = Depends(exigir_roles("director")),
+):
+    objetivo = db.query(Usuario).filter(Usuario.id == usuario_id).first()
+    if not objetivo:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+
+    cedula_limpia = cedula.strip()
+    duplicado = db.query(Usuario).filter(Usuario.cedula == cedula_limpia, Usuario.id != usuario_id).first()
+    if duplicado:
+        raise HTTPException(status_code=400, detail="Esa cédula ya pertenece a otro usuario")
+
+    if rol not in ("director", "coordinador", "docente", "representante"):
+        raise HTTPException(status_code=400, detail="Rol no válido")
+
+    es_activo = str(activo).lower() in ("true", "1", "on", "yes")
+    if objetivo.id == director.id and not es_activo:
+        raise HTTPException(status_code=400, detail="No puedes desactivar tu propia cuenta activa")
+
+    objetivo.cedula = cedula_limpia
+    objetivo.nombre_completo = nombre_completo.strip()
+    objetivo.rol = rol
+    objetivo.activo = es_activo
+    if password.strip():
+        objetivo.password_hash = hash_password(password.strip())
+
+    db.commit()
+    return RedirectResponse(url="/panel", status_code=303)
+
+
+@app.post("/usuarios/{usuario_id}/eliminar")
+def eliminar_usuario(
+    usuario_id: int,
+    db: Session = Depends(get_db),
+    director: Usuario = Depends(exigir_roles("director")),
+):
+    objetivo = db.query(Usuario).filter(Usuario.id == usuario_id).first()
+    if not objetivo:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+
+    if objetivo.id == director.id:
+        raise HTTPException(status_code=400, detail="No puedes eliminar tu propio usuario en sesión")
+
+    tiene_vinculos = (
+        db.query(AsignacionDocente).filter(AsignacionDocente.docente_id == usuario_id).first()
+        or db.query(Estudiante).filter(Estudiante.representante_id == usuario_id).first()
+        or db.query(Calificacion).filter(Calificacion.docente_id == usuario_id).first()
+        or db.query(Asistencia).filter(
+            (Asistencia.docente_id == usuario_id) | (Asistencia.revisado_por_id == usuario_id)
+        ).first()
+        or db.query(ParteDisciplinario).filter(ParteDisciplinario.reportado_por_id == usuario_id).first()
+        or db.query(AvisoCentro).filter(AvisoCentro.autor_id == usuario_id).first()
+    )
+    if tiene_vinculos:
+        raise HTTPException(
+            status_code=400,
+            detail="El usuario tiene registros académicos o administrativos asociados; edítalo para marcarlo como Inactivo",
+        )
+
+    db.delete(objetivo)
+    db.commit()
+    return RedirectResponse(url="/panel", status_code=303)
+
 
 @app.post("/anos/crear")
 def crear_ano_escolar(
@@ -572,7 +643,7 @@ def cerrar_ano_escolar(
 ):
     ano = db.query(AnoEscolar).filter(AnoEscolar.id == ano_id).first()
     if not ano:
-        raise HTTPException(status_code=404, detail="Año escolar no encontrado")
+        raise HTTPException(status_code=404, detail="AÃ±o escolar no encontrado")
     ano.cerrado = True
     ano.activo = False
 
@@ -596,7 +667,7 @@ def crear_usuario(
     _: Usuario = Depends(exigir_roles("director")),
 ):
     if db.query(Usuario).filter(Usuario.cedula == cedula.strip()).first():
-        raise HTTPException(status_code=400, detail="La cédula ya existe")
+        raise HTTPException(status_code=400, detail="La cÃ©dula ya existe")
     db.add(
         Usuario(
             cedula=cedula.strip(),
@@ -698,7 +769,7 @@ def actualizar_matricula_y_alumno(
 ):
     matricula = db.query(MatriculaAnual).filter(MatriculaAnual.id == matricula_id).first()
     if not matricula:
-        raise HTTPException(status_code=404, detail="Matrícula no encontrada")
+        raise HTTPException(status_code=404, detail="MatrÃ­cula no encontrada")
 
     estudiante = matricula.estudiante
     estudiante.nombres = nombres.strip()
@@ -841,7 +912,7 @@ def revisar_justificacion(
     if not asistencia:
         raise HTTPException(status_code=404, detail="Registro de asistencia no encontrado")
     if decision not in ("Aprobada", "Rechazada"):
-        raise HTTPException(status_code=400, detail="Decisión no válida")
+        raise HTTPException(status_code=400, detail="DecisiÃ³n no vÃ¡lida")
     asistencia.estado_justificacion = decision
     asistencia.revisado_por_id = usuario.id
     db.commit()
@@ -890,4 +961,5 @@ def registrar_parte(
     )
     db.commit()
     return RedirectResponse(url="/panel", status_code=303)
+
 

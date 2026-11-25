@@ -618,6 +618,62 @@
             </table>
           </div>
         </div>
+      <div id="box-editar-usuario" class="box" style="display:none; margin-top:14px;">
+        <div class="box-head">Editar Usuario Seleccionado</div>
+        <div class="box-body">
+          <form id="form-editar-usuario" method="post" action="" class="grid-inputs">
+            <div>
+              <label class="lbl">Cédula</label>
+              <input id="edit-usr-cedula" name="cedula" class="inp" required />
+            </div>
+            <div>
+              <label class="lbl">Nombre Completo</label>
+              <input id="edit-usr-nombre" name="nombre_completo" class="inp" required />
+            </div>
+            <div>
+              <label class="lbl">Rol</label>
+              <select id="edit-usr-rol" name="rol" class="inp">
+                <option value="director">director</option>
+                <option value="coordinador">coordinador</option>
+                <option value="docente">docente</option>
+                <option value="representante">representante</option>
+              </select>
+            </div>
+            <div>
+              <label class="lbl">Estado</label>
+              <select id="edit-usr-activo" name="activo" class="inp">
+                <option value="true">Activo</option>
+                <option value="false">Inactivo</option>
+              </select>
+            </div>
+            <div>
+              <label class="lbl">Nueva Contraseña (opcional)</label>
+              <input id="edit-usr-password" name="password" type="password" class="inp" placeholder="Dejar vacío para mantener" />
+            </div>
+            <div style="display:flex; gap:8px; align-items:flex-end;">
+              <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+              <button type="button" class="btn" onclick="cerrarEditarUsuario()">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <script>
+        function abrirEditarUsuario(btn) {
+          const box = document.getElementById("box-editar-usuario");
+          const form = document.getElementById("form-editar-usuario");
+          form.action = "/usuarios/" + btn.dataset.id + "/editar";
+          document.getElementById("edit-usr-cedula").value = btn.dataset.cedula;
+          document.getElementById("edit-usr-nombre").value = btn.dataset.nombre;
+          document.getElementById("edit-usr-rol").value = btn.dataset.rol;
+          document.getElementById("edit-usr-activo").value = btn.dataset.activo;
+          document.getElementById("edit-usr-password").value = "";
+          box.style.display = "block";
+          box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+        function cerrarEditarUsuario() {
+          document.getElementById("box-editar-usuario").style.display = "none";
+        }
+      </script>
       </section>
 
       <!-- MATRICULAR ALUMNO -->
@@ -854,6 +910,62 @@
             </table>
           </div>
         </div>
+      <div id="box-editar-usuario" class="box" style="display:none; margin-top:14px;">
+        <div class="box-head">Editar Usuario Seleccionado</div>
+        <div class="box-body">
+          <form id="form-editar-usuario" method="post" action="" class="grid-inputs">
+            <div>
+              <label class="lbl">Cédula</label>
+              <input id="edit-usr-cedula" name="cedula" class="inp" required />
+            </div>
+            <div>
+              <label class="lbl">Nombre Completo</label>
+              <input id="edit-usr-nombre" name="nombre_completo" class="inp" required />
+            </div>
+            <div>
+              <label class="lbl">Rol</label>
+              <select id="edit-usr-rol" name="rol" class="inp">
+                <option value="director">director</option>
+                <option value="coordinador">coordinador</option>
+                <option value="docente">docente</option>
+                <option value="representante">representante</option>
+              </select>
+            </div>
+            <div>
+              <label class="lbl">Estado</label>
+              <select id="edit-usr-activo" name="activo" class="inp">
+                <option value="true">Activo</option>
+                <option value="false">Inactivo</option>
+              </select>
+            </div>
+            <div>
+              <label class="lbl">Nueva Contraseña (opcional)</label>
+              <input id="edit-usr-password" name="password" type="password" class="inp" placeholder="Dejar vacío para mantener" />
+            </div>
+            <div style="display:flex; gap:8px; align-items:flex-end;">
+              <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+              <button type="button" class="btn" onclick="cerrarEditarUsuario()">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <script>
+        function abrirEditarUsuario(btn) {
+          const box = document.getElementById("box-editar-usuario");
+          const form = document.getElementById("form-editar-usuario");
+          form.action = "/usuarios/" + btn.dataset.id + "/editar";
+          document.getElementById("edit-usr-cedula").value = btn.dataset.cedula;
+          document.getElementById("edit-usr-nombre").value = btn.dataset.nombre;
+          document.getElementById("edit-usr-rol").value = btn.dataset.rol;
+          document.getElementById("edit-usr-activo").value = btn.dataset.activo;
+          document.getElementById("edit-usr-password").value = "";
+          box.style.display = "block";
+          box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+        function cerrarEditarUsuario() {
+          document.getElementById("box-editar-usuario").style.display = "none";
+        }
+      </script>
       </section>
 
       <!-- BOLETINES DEL CURSO -->
@@ -1051,6 +1163,62 @@
             </table>
           </div>
         </div>
+      <div id="box-editar-usuario" class="box" style="display:none; margin-top:14px;">
+        <div class="box-head">Editar Usuario Seleccionado</div>
+        <div class="box-body">
+          <form id="form-editar-usuario" method="post" action="" class="grid-inputs">
+            <div>
+              <label class="lbl">Cédula</label>
+              <input id="edit-usr-cedula" name="cedula" class="inp" required />
+            </div>
+            <div>
+              <label class="lbl">Nombre Completo</label>
+              <input id="edit-usr-nombre" name="nombre_completo" class="inp" required />
+            </div>
+            <div>
+              <label class="lbl">Rol</label>
+              <select id="edit-usr-rol" name="rol" class="inp">
+                <option value="director">director</option>
+                <option value="coordinador">coordinador</option>
+                <option value="docente">docente</option>
+                <option value="representante">representante</option>
+              </select>
+            </div>
+            <div>
+              <label class="lbl">Estado</label>
+              <select id="edit-usr-activo" name="activo" class="inp">
+                <option value="true">Activo</option>
+                <option value="false">Inactivo</option>
+              </select>
+            </div>
+            <div>
+              <label class="lbl">Nueva Contraseña (opcional)</label>
+              <input id="edit-usr-password" name="password" type="password" class="inp" placeholder="Dejar vacío para mantener" />
+            </div>
+            <div style="display:flex; gap:8px; align-items:flex-end;">
+              <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+              <button type="button" class="btn" onclick="cerrarEditarUsuario()">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <script>
+        function abrirEditarUsuario(btn) {
+          const box = document.getElementById("box-editar-usuario");
+          const form = document.getElementById("form-editar-usuario");
+          form.action = "/usuarios/" + btn.dataset.id + "/editar";
+          document.getElementById("edit-usr-cedula").value = btn.dataset.cedula;
+          document.getElementById("edit-usr-nombre").value = btn.dataset.nombre;
+          document.getElementById("edit-usr-rol").value = btn.dataset.rol;
+          document.getElementById("edit-usr-activo").value = btn.dataset.activo;
+          document.getElementById("edit-usr-password").value = "";
+          box.style.display = "block";
+          box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+        function cerrarEditarUsuario() {
+          document.getElementById("box-editar-usuario").style.display = "none";
+        }
+      </script>
       </section>
 
       <!-- FALTAS, JUSTIFICACIONES Y PARTES -->
@@ -1185,6 +1353,62 @@
             </table>
           </div>
         </div>
+      <div id="box-editar-usuario" class="box" style="display:none; margin-top:14px;">
+        <div class="box-head">Editar Usuario Seleccionado</div>
+        <div class="box-body">
+          <form id="form-editar-usuario" method="post" action="" class="grid-inputs">
+            <div>
+              <label class="lbl">Cédula</label>
+              <input id="edit-usr-cedula" name="cedula" class="inp" required />
+            </div>
+            <div>
+              <label class="lbl">Nombre Completo</label>
+              <input id="edit-usr-nombre" name="nombre_completo" class="inp" required />
+            </div>
+            <div>
+              <label class="lbl">Rol</label>
+              <select id="edit-usr-rol" name="rol" class="inp">
+                <option value="director">director</option>
+                <option value="coordinador">coordinador</option>
+                <option value="docente">docente</option>
+                <option value="representante">representante</option>
+              </select>
+            </div>
+            <div>
+              <label class="lbl">Estado</label>
+              <select id="edit-usr-activo" name="activo" class="inp">
+                <option value="true">Activo</option>
+                <option value="false">Inactivo</option>
+              </select>
+            </div>
+            <div>
+              <label class="lbl">Nueva Contraseña (opcional)</label>
+              <input id="edit-usr-password" name="password" type="password" class="inp" placeholder="Dejar vacío para mantener" />
+            </div>
+            <div style="display:flex; gap:8px; align-items:flex-end;">
+              <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+              <button type="button" class="btn" onclick="cerrarEditarUsuario()">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <script>
+        function abrirEditarUsuario(btn) {
+          const box = document.getElementById("box-editar-usuario");
+          const form = document.getElementById("form-editar-usuario");
+          form.action = "/usuarios/" + btn.dataset.id + "/editar";
+          document.getElementById("edit-usr-cedula").value = btn.dataset.cedula;
+          document.getElementById("edit-usr-nombre").value = btn.dataset.nombre;
+          document.getElementById("edit-usr-rol").value = btn.dataset.rol;
+          document.getElementById("edit-usr-activo").value = btn.dataset.activo;
+          document.getElementById("edit-usr-password").value = "";
+          box.style.display = "block";
+          box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+        function cerrarEditarUsuario() {
+          document.getElementById("box-editar-usuario").style.display = "none";
+        }
+      </script>
 
         <div class="box">
           <div class="box-head">Partes Disciplinarios Emitidos</div>
@@ -1213,6 +1437,62 @@
             </table>
           </div>
         </div>
+      <div id="box-editar-usuario" class="box" style="display:none; margin-top:14px;">
+        <div class="box-head">Editar Usuario Seleccionado</div>
+        <div class="box-body">
+          <form id="form-editar-usuario" method="post" action="" class="grid-inputs">
+            <div>
+              <label class="lbl">Cédula</label>
+              <input id="edit-usr-cedula" name="cedula" class="inp" required />
+            </div>
+            <div>
+              <label class="lbl">Nombre Completo</label>
+              <input id="edit-usr-nombre" name="nombre_completo" class="inp" required />
+            </div>
+            <div>
+              <label class="lbl">Rol</label>
+              <select id="edit-usr-rol" name="rol" class="inp">
+                <option value="director">director</option>
+                <option value="coordinador">coordinador</option>
+                <option value="docente">docente</option>
+                <option value="representante">representante</option>
+              </select>
+            </div>
+            <div>
+              <label class="lbl">Estado</label>
+              <select id="edit-usr-activo" name="activo" class="inp">
+                <option value="true">Activo</option>
+                <option value="false">Inactivo</option>
+              </select>
+            </div>
+            <div>
+              <label class="lbl">Nueva Contraseña (opcional)</label>
+              <input id="edit-usr-password" name="password" type="password" class="inp" placeholder="Dejar vacío para mantener" />
+            </div>
+            <div style="display:flex; gap:8px; align-items:flex-end;">
+              <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+              <button type="button" class="btn" onclick="cerrarEditarUsuario()">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <script>
+        function abrirEditarUsuario(btn) {
+          const box = document.getElementById("box-editar-usuario");
+          const form = document.getElementById("form-editar-usuario");
+          form.action = "/usuarios/" + btn.dataset.id + "/editar";
+          document.getElementById("edit-usr-cedula").value = btn.dataset.cedula;
+          document.getElementById("edit-usr-nombre").value = btn.dataset.nombre;
+          document.getElementById("edit-usr-rol").value = btn.dataset.rol;
+          document.getElementById("edit-usr-activo").value = btn.dataset.activo;
+          document.getElementById("edit-usr-password").value = "";
+          box.style.display = "block";
+          box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+        function cerrarEditarUsuario() {
+          document.getElementById("box-editar-usuario").style.display = "none";
+        }
+      </script>
       </section>
 
       <!-- AVISOS DEL CENTRO -->
@@ -1351,6 +1631,62 @@
             </table>
           </div>
         </div>
+      <div id="box-editar-usuario" class="box" style="display:none; margin-top:14px;">
+        <div class="box-head">Editar Usuario Seleccionado</div>
+        <div class="box-body">
+          <form id="form-editar-usuario" method="post" action="" class="grid-inputs">
+            <div>
+              <label class="lbl">Cédula</label>
+              <input id="edit-usr-cedula" name="cedula" class="inp" required />
+            </div>
+            <div>
+              <label class="lbl">Nombre Completo</label>
+              <input id="edit-usr-nombre" name="nombre_completo" class="inp" required />
+            </div>
+            <div>
+              <label class="lbl">Rol</label>
+              <select id="edit-usr-rol" name="rol" class="inp">
+                <option value="director">director</option>
+                <option value="coordinador">coordinador</option>
+                <option value="docente">docente</option>
+                <option value="representante">representante</option>
+              </select>
+            </div>
+            <div>
+              <label class="lbl">Estado</label>
+              <select id="edit-usr-activo" name="activo" class="inp">
+                <option value="true">Activo</option>
+                <option value="false">Inactivo</option>
+              </select>
+            </div>
+            <div>
+              <label class="lbl">Nueva Contraseña (opcional)</label>
+              <input id="edit-usr-password" name="password" type="password" class="inp" placeholder="Dejar vacío para mantener" />
+            </div>
+            <div style="display:flex; gap:8px; align-items:flex-end;">
+              <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+              <button type="button" class="btn" onclick="cerrarEditarUsuario()">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <script>
+        function abrirEditarUsuario(btn) {
+          const box = document.getElementById("box-editar-usuario");
+          const form = document.getElementById("form-editar-usuario");
+          form.action = "/usuarios/" + btn.dataset.id + "/editar";
+          document.getElementById("edit-usr-cedula").value = btn.dataset.cedula;
+          document.getElementById("edit-usr-nombre").value = btn.dataset.nombre;
+          document.getElementById("edit-usr-rol").value = btn.dataset.rol;
+          document.getElementById("edit-usr-activo").value = btn.dataset.activo;
+          document.getElementById("edit-usr-password").value = "";
+          box.style.display = "block";
+          box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+        function cerrarEditarUsuario() {
+          document.getElementById("box-editar-usuario").style.display = "none";
+        }
+      </script>
       </section>
       {% endif %}
 
@@ -1439,6 +1775,62 @@
             </table>
           </div>
         </div>
+      <div id="box-editar-usuario" class="box" style="display:none; margin-top:14px;">
+        <div class="box-head">Editar Usuario Seleccionado</div>
+        <div class="box-body">
+          <form id="form-editar-usuario" method="post" action="" class="grid-inputs">
+            <div>
+              <label class="lbl">Cédula</label>
+              <input id="edit-usr-cedula" name="cedula" class="inp" required />
+            </div>
+            <div>
+              <label class="lbl">Nombre Completo</label>
+              <input id="edit-usr-nombre" name="nombre_completo" class="inp" required />
+            </div>
+            <div>
+              <label class="lbl">Rol</label>
+              <select id="edit-usr-rol" name="rol" class="inp">
+                <option value="director">director</option>
+                <option value="coordinador">coordinador</option>
+                <option value="docente">docente</option>
+                <option value="representante">representante</option>
+              </select>
+            </div>
+            <div>
+              <label class="lbl">Estado</label>
+              <select id="edit-usr-activo" name="activo" class="inp">
+                <option value="true">Activo</option>
+                <option value="false">Inactivo</option>
+              </select>
+            </div>
+            <div>
+              <label class="lbl">Nueva Contraseña (opcional)</label>
+              <input id="edit-usr-password" name="password" type="password" class="inp" placeholder="Dejar vacío para mantener" />
+            </div>
+            <div style="display:flex; gap:8px; align-items:flex-end;">
+              <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+              <button type="button" class="btn" onclick="cerrarEditarUsuario()">Cancelar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <script>
+        function abrirEditarUsuario(btn) {
+          const box = document.getElementById("box-editar-usuario");
+          const form = document.getElementById("form-editar-usuario");
+          form.action = "/usuarios/" + btn.dataset.id + "/editar";
+          document.getElementById("edit-usr-cedula").value = btn.dataset.cedula;
+          document.getElementById("edit-usr-nombre").value = btn.dataset.nombre;
+          document.getElementById("edit-usr-rol").value = btn.dataset.rol;
+          document.getElementById("edit-usr-activo").value = btn.dataset.activo;
+          document.getElementById("edit-usr-password").value = "";
+          box.style.display = "block";
+          box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+        function cerrarEditarUsuario() {
+          document.getElementById("box-editar-usuario").style.display = "none";
+        }
+      </script>
       </section>
 
       <section id="view-anos" class="section-view">
@@ -1552,6 +1944,7 @@
 </script>
 </body>
 </html>
+
 
 
 
