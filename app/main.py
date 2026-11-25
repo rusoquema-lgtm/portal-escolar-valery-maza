@@ -28,6 +28,7 @@ try:
     from sqlalchemy import text
     with engine.begin() as conn:
         conn.execute(text("ALTER TABLE calificaciones ADD COLUMN IF NOT EXISTS fecha VARCHAR(20)"))
+        conn.execute(text("ALTER TABLE calificaciones ADD COLUMN IF NOT EXISTS nota_diaria TEXT"))
 except Exception:
     pass
 
@@ -934,22 +935,25 @@ def guardar_calificacion(
     lapso: str = Form("1er Momento"),
     nota_20: float = Form(...),
     fecha: str = Form(""),
+    nota_diaria: str = Form(""),
     db: Session = Depends(get_db),
     usuario: Usuario = Depends(exigir_roles("docente", "director")),
 ):
-    if nota_20 < 1 or nota_20 > 20:
-        raise HTTPException(status_code=400, detail="Nota fuera de rango (1 a 20)")
+    if nota_20 < 0 or nota_20 > 20:
+        raise HTTPException(status_code=400, detail="Nota fuera de rango (0 a 20)")
     fecha_limpia = (fecha or "").strip() or date.today().isoformat()
-    db.add(
-        Calificacion(
-            matricula_id=matricula_id,
-            docente_id=usuario.id,
-            asignatura=asignatura.strip(),
-            lapso=(lapso or "1er Momento").strip(),
-            nota_20=nota_20,
-            fecha=fecha_limpia,
-        )
+    nota_diaria_limpia = (nota_diaria or "").strip() or None
+    nuevo_reg = Calificacion(
+        matricula_id=matricula_id,
+        docente_id=usuario.id,
+        asignatura=asignatura.strip(),
+        lapso=(lapso or "1er Momento").strip(),
+        nota_20=nota_20,
+        fecha=fecha_limpia,
     )
+    if hasattr(nuevo_reg, "nota_diaria"):
+        nuevo_reg.nota_diaria = nota_diaria_limpia
+    db.add(nuevo_reg)
     db.commit()
     return RedirectResponse(url="/panel", status_code=303)
 
