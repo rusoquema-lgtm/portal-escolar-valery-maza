@@ -264,6 +264,33 @@ def filtrar_horarios_para_usuario(db: Session, usuario: Usuario, horarios: list,
     return filtrados
 
 
+def filtrar_horarios_docente(db: Session, usuario: Usuario, horarios: list, ano_id: int | None):
+    if not usuario or usuario.rol != "docente":
+        return horarios
+    q = db.query(AsignacionDocente).filter(AsignacionDocente.docente_id == usuario.id)
+    if ano_id:
+        q = q.filter(AsignacionDocente.ano_escolar_id == ano_id)
+    asignaciones = q.all()
+    if not asignaciones:
+        return []
+    resultado = []
+    for h in horarios:
+        hg = (h.grado_ano or "").strip().lower()
+        hs = (h.seccion or "").strip().lower()
+        ha = (h.asignatura or "").strip().lower()
+        for a in asignaciones:
+            ag = (a.grado_ano or "").strip().lower()
+            asec = (a.seccion or "").strip().lower()
+            aasig = (a.asignatura or "").strip().lower()
+            ok_g = (not ag) or (ag == hg)
+            ok_s = (not asec) or (asec == "todas") or (asec == hs)
+            ok_a = (not aasig) or (aasig == ha)
+            if ok_g and ok_s and ok_a:
+                resultado.append(h)
+                break
+    return resultado
+
+
 def construir_horarios_por_curso(horarios, filtro_grado="", filtro_seccion=""):
     fgh = (filtro_grado or "").strip().lower()
     fsh = (filtro_seccion or "").strip().lower()
@@ -446,6 +473,17 @@ def panel(
         fm = filtro_materia.strip().lower()
         matriz_cuaderno = [f for f in matriz_cuaderno if fm in (f["asignatura"] or "").lower()]
 
+    horarios = filtrar_horarios_docente(
+        db, usuario, horarios, ano_seleccionado.id if ano_seleccionado else None
+    )
+    fgh_filtro = (filtro_grado_horario or "").strip().lower()
+    fsh_filtro = (filtro_seccion_horario or "").strip().lower()
+    horarios_filtrados = [
+        h for h in horarios
+        if (not fgh_filtro or fgh_filtro in (h.grado_ano or "").strip().lower())
+        and (not fsh_filtro or fsh_filtro in (h.seccion or "").strip().lower())
+    ]
+    rejilla_horario = construir_rejilla_horario(horarios_filtrados)
     horarios_por_curso = construir_horarios_por_curso(
         horarios, filtro_grado_horario, filtro_seccion_horario
     )
@@ -501,6 +539,7 @@ def panel(
             "usuarios_lista": usuarios_lista,
             "calificaciones": calificaciones,
             "matriz_cuaderno": matriz_cuaderno,
+            "rejilla_horario": rejilla_horario,
             "horarios_por_curso": horarios_por_curso,
             "asignaturas_base": ASIGNATURAS_BASE,
             "dias_semana": DIAS_SEMANA,
@@ -925,7 +964,13 @@ def guardar_horario(
         )
     )
     db.commit()
-    return RedirectResponse(url=f"/panel?ano_id={ano_escolar_id}", status_code=303)
+    from urllib.parse import urlencode
+    qs = urlencode({
+        "ano_id": ano_escolar_id,
+        "filtro_grado_horario": grado_ano.strip(),
+        "filtro_seccion_horario": seccion.strip(),
+    })
+    return RedirectResponse(url=f"/panel?{qs}", status_code=303)
 
 
 @app.post("/horarios/{horario_id}/eliminar")
