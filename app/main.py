@@ -490,23 +490,83 @@ def asignar_docente_materia(
     ano_escolar_id: int = Form(...),
     docente_id: int = Form(...),
     asignatura: str = Form(...),
-    grado_ano: str = Form(...),
-    seccion: str = Form(...),
+    grado_ano: list[str] = Form(...),
+    seccion: list[str] = Form(["TODAS"]),
     db: Session = Depends(get_db),
     _: Usuario = Depends(exigir_roles("director", "coordinador")),
 ):
-    db.add(
-        AsignacionDocente(
-            ano_escolar_id=ano_escolar_id,
-            docente_id=docente_id,
-            asignatura=asignatura.strip(),
-            grado_ano=grado_ano.strip(),
-            seccion=seccion.strip(),
-        )
-    )
-    db.commit()
-    return RedirectResponse(url=f"/panel?ano_id={ano_escolar_id}", status_code=303)
+    asig_limpia = asignatura.strip()
+    if not asig_limpia:
+        raise HTTPException(status_code=400, detail="La asignatura es obligatoria")
 
+    grados_seleccionados = [g.strip() for g in grado_ano if g and g.strip()]
+    if not grados_seleccionados:
+        raise HTTPException(status_code=400, detail="Selecciona al menos un grado o año")
+
+    secciones_raw = [s.strip() for s in seccion if s and s.strip()]
+    todas_las_secciones = (not secciones_raw) or any(
+        s.upper() in ("TODAS", "ALL", "*") for s in secciones_raw
+    )
+
+    # Secciones conocidas en el año escolar por grado/año
+    secciones_por_grado: dict[str, list[str]] = {}
+    mats = (
+        db.query(Matricula.grado_ano, Matricula.seccion)
+        .filter(Matricula.ano_escolar_id == ano_escolar_id)
+        .all()
+    )
+    for g_val, s_val in mats:
+        g_clean = (g_val or "").strip()
+        s_clean = (s_val or "").strip()
+        if g_clean and s_clean:
+            secciones_por_grado.setdefault(g_clean, [])
+            if s_clean not in secciones_por_grado[g_clean]:
+                secciones_por_grado[g_clean].append(s_clean)
+
+    # Evitar duplicados exactos
+    existentes = (
+        db.query(AsignacionDocente)
+        .filter(
+            AsignacionDocente.ano_escolar_id == ano_escolar_id,
+            AsignacionDocente.docente_id == docente_id,
+            AsignacionDocente.asignatura == asig_limpia,
+        )
+        .all()
+    )
+    claves_existentes = {
+        ((a.grado_ano or "").strip(), (a.seccion or "").strip()) for a in existentes
+    }
+
+    agregadas = 0
+    for g_item in grados_seleccionados:
+        if todas_las_secciones:
+            secs_objetivo = secciones_por_grado.get(g_item) or ["A", "B", "C"]
+        else:
+            secs_objetivo = secciones_raw
+
+        for s_item in secs_objetivo:
+            s_clean = s_item.strip()
+            if not s_clean:
+                continue
+            clave = (g_item, s_clean)
+            if clave in claves_existentes:
+                continue
+            db.add(
+                AsignacionDocente(
+                    ano_escolar_id=ano_escolar_id,
+                    docente_id=docente_id,
+                    asignatura=asig_limpia,
+                    grado_ano=g_item,
+                    seccion=s_clean,
+                )
+            )
+            claves_existentes.add(clave)
+            agregadas += 1
+
+    if agregadas:
+        db.commit()
+
+    return RedirectResponse(url=f"/panel?ano_id={ano_escolar_id}", status_code=303)
 
 @app.post("/docentes/asignaciones/{asignacion_id}/eliminar")
 def eliminar_asignacion_docente(
