@@ -1300,6 +1300,8 @@ async def inscribir_desde_web_publica(
     if matricula_existente:
         matricula_existente.grado_ano = grado_ano
         matricula_existente.seccion = seccion
+        if not matricula_existente.estatus_cierre:
+            matricula_existente.estatus_cierre = "pendiente"
         matricula_id = matricula_existente.id
     else:
         nueva_mat = MatriculaAnual(
@@ -1307,6 +1309,7 @@ async def inscribir_desde_web_publica(
             ano_escolar_id=ano_activo.id,
             grado_ano=grado_ano,
             seccion=seccion,
+            estatus_cierre="pendiente",
         )
         db.add(nueva_mat)
         db.flush()
@@ -1315,8 +1318,100 @@ async def inscribir_desde_web_publica(
     db.commit()
     return {
         "ok": True,
-        "mensaje": "Matr?cula registrada en el sistema Albor?n",
+        "estado_solicitud": "pendiente",
+        "mensaje": "Solicitud enviada a la escuela. Queda pendiente de revisi?n y aceptaci?n",
         "matricula_id": matricula_id,
         "estudiante_id": est.id,
         "ano_escolar": ano_activo.nombre,
+    }
+
+
+@app.post("/matriculas/{matricula_id}/aceptar")
+def aceptar_matricula_solicitada(
+    matricula_id: int,
+    db: Session = Depends(get_db),
+    _: Usuario = Depends(exigir_roles("director", "coordinador")),
+):
+    matricula = db.query(MatriculaAnual).filter(MatriculaAnual.id == matricula_id).first()
+    if not matricula:
+        raise HTTPException(status_code=404, detail="Matr?cula no encontrada")
+
+    ano_id = matricula.ano_escolar_id
+    matricula.estatus_cierre = "en_curso"
+    db.commit()
+    destino = f"/panel?ano_id={ano_id}" if ano_id else "/panel"
+    return RedirectResponse(url=destino, status_code=303)
+
+
+@app.post("/matriculas/{matricula_id}/rechazar")
+def rechazar_matricula_solicitada(
+    matricula_id: int,
+    db: Session = Depends(get_db),
+    _: Usuario = Depends(exigir_roles("director", "coordinador")),
+):
+    matricula = db.query(MatriculaAnual).filter(MatriculaAnual.id == matricula_id).first()
+    if not matricula:
+        raise HTTPException(status_code=404, detail="Matr?cula no encontrada")
+
+    ano_id = matricula.ano_escolar_id
+    db.query(Calificacion).filter(Calificacion.matricula_id == matricula_id).delete(synchronize_session=False)
+    db.query(Asistencia).filter(Asistencia.matricula_id == matricula_id).delete(synchronize_session=False)
+    db.query(ParteDisciplinario).filter(ParteDisciplinario.matricula_id == matricula_id).delete(synchronize_session=False)
+    db.delete(matricula)
+    db.commit()
+    destino = f"/panel?ano_id={ano_id}" if ano_id else "/panel"
+    return RedirectResponse(url=destino, status_code=303)
+
+
+@app.get("/api/public/galeria")
+def listar_galeria_publica(request: Request):
+    carpeta = Path("app/static/galeria")
+    carpeta.mkdir(parents=True, exist_ok=True)
+    base_url = str(request.base_url).rstrip("/")
+    archivos = []
+    exts = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
+    for f in sorted(carpeta.iterdir(), key=lambda p: p.stat().st_mtime, reverse=True):
+        if f.is_file() and f.suffix.lower() in exts:
+            partes = f.stem.split("__", 1)
+            titulo = partes[1].replace("_", " ") if len(partes) == 2 else f.stem.replace("_", " ")
+            archivos.append({
+                "archivo": f.name,
+                "titulo": titulo,
+                "url": f"{base_url}/static/galeria/{f.name}",
+            })
+    return {"fotos": archivos}
+
+
+@app.post("/api/public/galeria")
+async def subir_foto_galeria(
+    request: Request,
+    titulo: str = Form("Actividad escolar"),
+    categoria: str = Form("Escuela"),
+    foto: UploadFile = File(...),
+):
+    carpeta = Path("app/static/galeria")
+    carpeta.mkdir(parents=True, exist_ok=True)
+    ext = Path(foto.filename or "foto.jpg").suffix.lower()
+    if ext not in {".jpg", ".jpeg", ".png", ".webp", ".gif"}:
+        raise HTTPException(status_code=400, detail="Formato de imagen no permitido (usa JPG, PNG o WEBP)")
+
+    contenido = await foto.read()
+    if not contenido:
+        raise HTTPException(status_code=400, detail="El archivo de imagen est? vac?o")
+
+    titulo_limpio = "".join(c if c.isalnum() or c in (" ", "-", "_") else "" for c in (titulo or "Actividad")).strip().replace(" ", "_")[:45] or "Actividad"
+    cat_limpia = "".join(c if c.isalnum() else "" for c in (categoria or "Escuela"))[:20] or "Escuela"
+    nombre_final = f"{cat_limpia}_{uuid.uuid4().hex[:8]}__{titulo_limpio}{ext}"
+    (carpeta / nombre_final).write_bytes(contenido)
+
+    base_url = str(request.base_url).rstrip("/")
+    return {
+        "ok": True,
+        "mensaje": "Imagen subida correctamente a la galer?a",
+        "foto": {
+            "archivo": nombre_final,
+            "titulo": titulo_limpio.replace("_", " "),
+            "categoria": cat_limpia,
+            "url": f"{base_url}/static/galeria/{nombre_final}",
+        },
     }

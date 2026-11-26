@@ -602,7 +602,15 @@
                   <td>
                     <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
                       <a class="btn-edit" href="/panel?ano_id={{ ano_seleccionado.id if ano_seleccionado else '' }}&editar_id={{ m.id }}">Editar</a>
-                      {% if m.estatus_cierre == "baja" %}
+                      {% if m.estatus_cierre == "pendiente" %}
+                        <span style="font-size:0.78rem; font-weight:700; color:#92400e; background:#fef3c7; padding:2px 8px; border-radius:999px;">Pendiente</span>
+                        <form method="post" action="/matriculas/{{ m.id }}/aceptar" style="display:inline; margin:0;">
+                          <button type="submit" class="btn-save" style="padding:4px 8px; font-size:0.8rem;">Aceptar</button>
+                        </form>
+                        <form method="post" action="/matriculas/{{ m.id }}/rechazar" style="display:inline; margin:0;" onsubmit="return confirm('?Rechazar y eliminar esta solicitud de matr?cula?');">
+                          <button type="submit" class="btn-cancel" style="padding:4px 8px; font-size:0.8rem; color:#b42318;">Rechazar</button>
+                        </form>
+                      {% elif m.estatus_cierre == "baja" %}
                         <span style="font-size:0.78rem; font-weight:700; color:#b42318; background:#fef3f2; padding:2px 8px; border-radius:999px;">De baja</span>
                       {% else %}
                         <form method="post" action="/matriculas/{{ m.id }}/baja" style="display:inline; margin:0;" onsubmit="return confirm('?Dar de baja la matr?cula de {{ m.estudiante.nombres }} {{ m.estudiante.apellidos }}?');">
