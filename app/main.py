@@ -383,6 +383,10 @@ def vista_login(request: Request, db: Session = Depends(get_db)):
     return templates.TemplateResponse(request, "login.html", {"error": None, "centro": centro})
 
 
+@app.get("/login")
+def login_get():
+    return RedirectResponse(url="/", status_code=303)
+
 @app.post("/login")
 def login(
     request: Request,
