@@ -554,7 +554,53 @@
           </div>
         </div>
 
-        <div class="box">
+        <!-- BANDEJA SOLICITUDES PENDIENTES -->
+        {% set pendientes = matriculas | selectattr("estatus_cierre", "equalto", "pendiente") | list %}
+        {% if pendientes %}
+        <div class="box" style="border-left:4px solid #d97706; margin-bottom:14px;">
+          <div class="box-head">Solicitudes de Matr?cula Pendientes por Revisar ({ pendientes | length })</div>
+          <div class="box-body">
+            <div class="tbl-wrap">
+              <table class="alboran-tbl">
+                <thead>
+                  <tr>
+                    <th>Alumno</th>
+                    <th>C?dula Escolar</th>
+                    <th>Grado / Secci?n</th>
+                    <th>Representante</th>
+                    <th>Acci?n de la Escuela</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for p in pendientes %}
+                  <tr>
+                    <td><strong>{{ p.estudiante.apellidos }} {{ p.estudiante.nombres }}</strong></td>
+                    <td>{{ p.estudiante.cedula_escolar }}</td>
+                    <td>{{ p.grado_ano }} "{{ p.seccion }}"</td>
+                    <td>{{ p.estudiante.representante_legal or "-" }}</td>
+                    <td>
+                      <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+                        {% if usuario.rol in ["director", "coordinador"] %}
+                        <form method="post" action="/matriculas/{{ p.id }}/aceptar" style="display:inline; margin:0;">
+                          <button type="submit" class="btn-save" style="padding:4px 10px; font-size:0.82rem;">Aceptar</button>
+                        </form>
+                        <form method="post" action="/matriculas/{{ p.id }}/rechazar" style="display:inline; margin:0;" onsubmit="return confirm('?Rechazar y eliminar esta solicitud de matr?cula?');">
+                          <button type="submit" class="btn-cancel" style="padding:4px 10px; font-size:0.82rem; color:#b42318;">Rechazar</button>
+                        </form>
+                        {% else %}
+                        <span style="font-size:0.8rem; color:#667085;">Pendiente de revisi?n</span>
+                        {% endif %}
+                      </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+<div class="box">
           <div class="box-head">
             {{ centro.nombre_escuela }} — Datos de Matrícula del Alumnado ({{ ano_seleccionado.nombre if ano_seleccionado else "" }})
           </div>

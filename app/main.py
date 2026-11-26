@@ -970,10 +970,16 @@ def eliminar_matricula(
         raise HTTPException(status_code=404, detail="Matr?cula no encontrada")
 
     ano_id = matricula.ano_escolar_id
+    est_id = matricula.estudiante_id
     db.query(Calificacion).filter(Calificacion.matricula_id == matricula_id).delete(synchronize_session=False)
     db.query(Asistencia).filter(Asistencia.matricula_id == matricula_id).delete(synchronize_session=False)
     db.query(ParteDisciplinario).filter(ParteDisciplinario.matricula_id == matricula_id).delete(synchronize_session=False)
     db.delete(matricula)
+    db.flush()
+    if est_id and db.query(MatriculaAnual).filter(MatriculaAnual.estudiante_id == est_id).count() == 0:
+        est_obj = db.query(Estudiante).filter(Estudiante.id == est_id).first()
+        if est_obj:
+            db.delete(est_obj)
     db.commit()
     destino = f"/panel?ano_id={ano_id}" if ano_id else "/panel"
     return RedirectResponse(url=destino, status_code=303)
@@ -1304,7 +1310,7 @@ async def inscribir_desde_web_publica(
     if matricula_existente:
         matricula_existente.grado_ano = grado_ano
         matricula_existente.seccion = seccion
-        if not matricula_existente.estatus_cierre:
+        if matricula_existente.estatus_cierre != "en_curso":
             matricula_existente.estatus_cierre = "pendiente"
         matricula_id = matricula_existente.id
     else:
