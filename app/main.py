@@ -1367,6 +1367,22 @@ def rechazar_matricula_solicitada(
     return RedirectResponse(url=destino, status_code=303)
 
 
+
+
+@app.delete("/api/panel/galeria/{nombre_archivo}")
+def eliminar_foto_galeria(nombre_archivo: str, request: Request):
+    usuario_id = request.session.get("usuario_id")
+    rol = (request.session.get("rol") or "").lower()
+    if not usuario_id or rol not in ("director", "coordinador", "admin", "administrador", "directivo"):
+        raise HTTPException(status_code=403, detail="Acceso denegado")
+    carpeta = Path("app/static/galeria").resolve()
+    archivo_seguro = Path(nombre_archivo).name
+    destino = (carpeta / archivo_seguro).resolve()
+    if destino.parent != carpeta or not destino.exists() or not destino.is_file():
+        raise HTTPException(status_code=404, detail="Imagen no encontrada")
+    destino.unlink()
+    return {"ok": True, "eliminado": archivo_seguro}
+
 @app.get("/api/public/galeria")
 def listar_galeria_publica(request: Request):
     carpeta = Path("app/static/galeria")
@@ -1389,6 +1405,10 @@ def listar_galeria_publica(request: Request):
 @app.post("/api/public/galeria")
 async def subir_foto_galeria(
     request: Request,
+    usuario_id = request.session.get("usuario_id")
+    rol = (request.session.get("rol") or "").lower()
+    if not usuario_id or rol not in ("director", "coordinador", "admin", "administrador", "directivo"):
+        raise HTTPException(status_code=403, detail="Solo el administrador autenticado puede subir imagenes")
     titulo: str = Form("Actividad escolar"),
     categoria: str = Form("Escuela"),
     foto: UploadFile = File(...),
