@@ -600,7 +600,7 @@ def obtener_o_crear_centro(db: Session) -> ConfiguracionCentro:
 
 
 
-            ubicación=UBICACION_ESCUELA_DEFECTO,
+            ubicacion=UBICACION_ESCUELA_DEFECTO,
 
 
 
@@ -670,14 +670,14 @@ def obtener_o_crear_centro(db: Session) -> ConfiguracionCentro:
 
 
 
-        if not centro.ubicación:
+        if not centro.ubicacion:
 
 
 
 
 
 
-            centro.ubicación = UBICACION_ESCUELA_DEFECTO
+            centro.ubicacion = UBICACION_ESCUELA_DEFECTO
 
 
 
@@ -4758,7 +4758,7 @@ def guardar_centro(
 
 
 
-    ubicación: str = Form(""),
+    ubicacion: str = Form(""),
 
 
 
@@ -4807,7 +4807,7 @@ def guardar_centro(
 
 
 
-    centro.ubicación = ubicación.strip() or None
+    centro.ubicacion = ubicacion.strip() or None
 
 
 
