@@ -1,2576 +1,7736 @@
 <!DOCTYPE html>
+
+
 <html lang="es">
+
+
 <head>
+
+
   <meta charset="UTF-8" />
+
+
   <title>{{ centro.nombre_escuela }} — Gestión Académica</title>
+
+
   <style>
+
+
     * { box-sizing: border-box; }
+
+
     body {
+
+
       margin: 0;
+
+
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+
+
       background: #e6ecf2;
+
+
       color: #1e293b;
+
+
       font-size: 13.5px;
+
+
     }
+
+
     .topbar {
+
+
       background: #0f3d68;
+
+
       color: #ffffff;
+
+
       padding: 8px 16px;
+
+
       display: flex;
+
+
       flex-wrap: wrap;
+
+
       justify-content: space-between;
+
+
       align-items: center;
+
+
       gap: 10px;
+
+
       border-bottom: 3px solid #1d6fa5;
+
+
     }
+
+
     .topbar-brand {
+
+
       display: flex;
+
+
       align-items: center;
+
+
       gap: 10px;
+
+
       font-weight: 700;
+
+
       font-size: 15px;
+
+
     }
+
+
     .hamburger-btn {
+
+
       background: #174b7a;
+
+
       color: #ffffff;
+
+
       border: 1px solid #38bdf8;
+
+
       border-radius: 3px;
+
+
       width: 34px;
+
+
       height: 30px;
+
+
       font-size: 17px;
+
+
       line-height: 1;
+
+
       cursor: pointer;
+
+
       display: inline-flex;
+
+
       align-items: center;
+
+
       justify-content: center;
+
+
     }
+
+
     .hamburger-btn:hover { background: #1d6fa5; }
+
+
     .rol-pill {
+
+
       background: #1d6fa5;
+
+
       color: #fff;
+
+
       padding: 2px 8px;
+
+
       border-radius: 3px;
+
+
       font-size: 11px;
+
+
       text-transform: uppercase;
+
+
       letter-spacing: 0.4px;
+
+
     }
+
+
     .topbar-controls {
+
+
       display: flex;
+
+
       flex-wrap: wrap;
+
+
       align-items: center;
+
+
       gap: 8px;
+
+
     }
+
+
     .topbar select {
+
+
       padding: 4px 8px;
+
+
       border-radius: 3px;
+
+
       border: 1px solid #cbd5e1;
+
+
       font-size: 12.5px;
+
+
     }
+
+
     .btn-top {
+
+
       background: #ffffff;
+
+
       color: #0f3d68;
+
+
       border: none;
+
+
       padding: 5px 10px;
+
+
       border-radius: 3px;
+
+
       font-weight: 600;
+
+
       font-size: 12.5px;
+
+
       cursor: pointer;
+
+
     }
+
+
     .btn-top:hover { background: #f1f5f9; }
+
+
     .topbar a {
+
+
       color: #e2e8f0;
+
+
       text-decoration: none;
+
+
       font-weight: 600;
+
+
       font-size: 12.5px;
+
+
       margin-left: 4px;
+
+
     }
+
+
     .shell {
+
+
       display: flex;
+
+
       align-items: stretch;
+
+
       min-height: calc(100vh - 46px);
+
+
     }
+
+
     .sidebar {
+
+
       width: 250px;
+
+
       min-width: 250px;
+
+
       flex-shrink: 0;
+
+
       background: #1b2a3a;
+
+
       color: #cbd5e1;
+
+
       padding: 6px 0 16px;
+
+
       border-right: 1px solid #0f172a;
+
+
       transition: width 0.18s ease, min-width 0.18s ease;
+
+
       overflow: hidden;
+
+
     }
+
+
     .shell.menu-collapsed .sidebar {
+
+
       width: 0;
+
+
       min-width: 0;
+
+
       padding: 0;
+
+
       border-right: none;
+
+
     }
+
+
     .group-btn {
+
+
       width: 100%;
+
+
       background: #13202d;
+
+
       color: #93c5fd;
+
+
       border: none;
+
+
       border-bottom: 1px solid #243649;
+
+
       padding: 8px 12px;
+
+
       text-align: left;
+
+
       font-size: 11.5px;
+
+
       font-weight: 700;
+
+
       text-transform: uppercase;
+
+
       letter-spacing: 0.4px;
+
+
       cursor: pointer;
+
+
       display: flex;
+
+
       justify-content: space-between;
+
+
       align-items: center;
+
+
       white-space: nowrap;
+
+
     }
+
+
     .group-items { display: block; }
+
+
     .group-items.collapsed { display: none; }
+
+
     .menu-item {
+
+
       display: block;
+
+
       width: 100%;
+
+
       text-align: left;
+
+
       background: transparent;
+
+
       color: #e2e8f0;
+
+
       border: none;
+
+
       border-left: 4px solid transparent;
+
+
       padding: 8px 14px 8px 18px;
+
+
       font-size: 12.5px;
+
+
       font-weight: 600;
+
+
       cursor: pointer;
+
+
       white-space: nowrap;
+
+
     }
+
+
     .menu-item:hover { background: #293d52; }
+
+
     .menu-item.active {
+
+
       background: #0f3d68;
+
+
       color: #ffffff;
+
+
       border-left-color: #38bdf8;
+
+
     }
+
+
     .workspace {
+
+
       flex: 1;
+
+
       min-width: 0;
+
+
       padding: 16px;
+
+
     }
+
+
     .section-view { display: none; }
+
+
     .section-view.active { display: block; }
+
+
     .box {
+
+
       background: #ffffff;
+
+
       border: 1px solid #b8c7d9;
+
+
       border-radius: 3px;
+
+
       margin-bottom: 14px;
+
+
     }
+
+
     .box-head {
+
+
       background: linear-gradient(to bottom, #f4f7fa, #e5ecf3);
+
+
       border-bottom: 1px solid #b8c7d9;
+
+
       padding: 7px 12px;
+
+
       font-weight: 700;
+
+
       color: #0f3d68;
+
+
       font-size: 13.5px;
+
+
     }
+
+
     .box-body { padding: 12px; }
+
+
     .grid-inputs {
+
+
       display: grid;
+
+
       grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+
+
       gap: 10px;
+
+
       align-items: end;
+
+
     }
+
+
     .lbl {
+
+
       display: block;
+
+
       font-size: 11.5px;
+
+
       font-weight: 600;
+
+
       color: #334155;
+
+
       margin-bottom: 3px;
+
+
     }
+
+
     input, select, textarea {
+
+
       width: 100%;
+
+
       padding: 6px 8px;
+
+
       border: 1px solid #94a3b8;
+
+
       border-radius: 2px;
+
+
       font-size: 13px;
+
+
       background: #fff;
+
+
     }
+
+
     textarea { min-height: 54px; }
+
+
     .btn-save {
+
+
       background: #0f3d68;
+
+
       color: #fff;
+
+
       border: none;
+
+
       padding: 7px 12px;
+
+
       border-radius: 2px;
+
+
       font-weight: 600;
+
+
       cursor: pointer;
+
+
     }
+
+
     .btn-save:hover { background: #16538c; }
+
+
     .btn-ok {
+
+
       background: #15803d;
+
+
       color: #fff;
+
+
       border: none;
+
+
       padding: 4px 8px;
+
+
       border-radius: 2px;
+
+
       font-size: 11.5px;
+
+
       font-weight: 600;
+
+
       cursor: pointer;
+
+
     }
+
+
     .btn-bad {
+
+
       background: #b91c1c;
+
+
       color: #fff;
+
+
       border: none;
+
+
       padding: 4px 8px;
+
+
       border-radius: 2px;
+
+
       font-size: 11.5px;
+
+
       font-weight: 600;
+
+
       cursor: pointer;
+
+
     }
+
+
     .btn-edit {
+
+
       display: inline-block;
+
+
       background: #1d6fa5;
+
+
       color: #fff;
+
+
       text-decoration: none;
+
+
       padding: 4px 8px;
+
+
       border-radius: 2px;
+
+
       font-size: 11.5px;
+
+
       font-weight: 600;
+
+
     }
+
+
     .btn-edit:hover { background: #0f3d68; }
+
+
     .btn-cancel {
+
+
       display: inline-block;
+
+
       background: #64748b;
+
+
       color: #fff;
+
+
       text-decoration: none;
+
+
       padding: 7px 12px;
+
+
       border-radius: 2px;
+
+
       font-weight: 600;
+
+
       font-size: 12.5px;
+
+
     }
+
+
     .btn-close-year {
+
+
       background: #9a3412;
+
+
       color: #fff;
+
+
       border: none;
+
+
       padding: 7px 12px;
+
+
       border-radius: 2px;
+
+
       font-weight: 600;
+
+
       cursor: pointer;
+
+
     }
+
+
     .tbl-wrap { width: 100%; overflow-x: auto; }
+
+
     table.alboran-tbl {
+
+
       width: 100%;
+
+
       border-collapse: collapse;
+
+
       font-size: 12.5px;
+
+
     }
+
+
     table.alboran-tbl th {
+
+
       background: #174b7a;
+
+
       color: #ffffff;
+
+
       border: 1px solid #0f3d68;
+
+
       padding: 7px 8px;
+
+
       text-align: left;
+
+
       font-weight: 600;
+
+
     }
+
+
     table.alboran-tbl td {
+
+
       border: 1px solid #cbd5e1;
+
+
       padding: 6px 8px;
+
+
       vertical-align: middle;
+
+
     }
+
+
     table.alboran-tbl tr:nth-child(even) td { background: #f8fafc; }
+
+
     .num-cell { text-align: center; font-weight: 600; }
+
+
     .ok-txt { color: #15803d; font-weight: 700; }
+
+
     .bad-txt { color: #b91c1c; font-weight: 700; }
+
+
     .pend-txt { color: #b45309; font-weight: 700; }
+
+
     .foto-thumb {
+
+
       width: 46px;
+
+
       height: 56px;
+
+
       object-fit: cover;
+
+
       border: 1px solid #94a3b8;
+
+
       border-radius: 2px;
+
+
       background: #f1f5f9;
+
+
       display: block;
+
+
     }
+
+
     .foto-placeholder {
+
+
       width: 46px;
+
+
       height: 56px;
+
+
       border: 1px dashed #94a3b8;
+
+
       border-radius: 2px;
+
+
       background: #f8fafc;
+
+
       color: #64748b;
+
+
       font-size: 10px;
+
+
       display: flex;
+
+
       align-items: center;
+
+
       justify-content: center;
+
+
       text-align: center;
+
+
     }
+
+
     .boletin-card, .aviso-card {
+
+
       border: 1px solid #94a3b8;
+
+
       padding: 12px;
+
+
       margin-bottom: 12px;
+
+
       background: #fff;
+
+
     }
+
+
     .aviso-meta {
+
+
       font-size: 11.5px;
+
+
       color: #475569;
+
+
       margin-bottom: 6px;
+
+
     }
+
+
     .boletin-escuela {
+
+
       font-size: 15px;
+
+
       font-weight: 700;
+
+
       color: #0f3d68;
+
+
       margin-bottom: 8px;
+
+
       border-bottom: 1px solid #cbd5e1;
+
+
       padding-bottom: 6px;
+
+
     }
+
+
     .boletin-grid {
+
+
       display: grid;
+
+
       grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+
+
       gap: 6px 12px;
+
+
       background: #f1f5f9;
+
+
       border: 1px solid #cbd5e1;
+
+
       padding: 8px 10px;
+
+
       margin-bottom: 10px;
+
+
       font-size: 12.5px;
+
+
     }
+
+
     @media (max-width: 640px) {
+
+
       .sidebar { width: 210px; min-width: 210px; }
+
+
     }
+
+
     @media print {
+
+
       .no-print, .topbar, .sidebar { display: none !important; }
+
+
       .shell { display: block; }
+
+
       .workspace { padding: 0; }
+
+
       .section-view { display: none !important; }
+
+
       #view-boletines { display: block !important; }
+
+
     }
+
+
   </style>
+
+
 <style>
+
+
   .celda-asistencia {
+
+
     transition: background-color 0.15s ease;
+
+
   }
+
+
   .estado-presente {
+
+
     background-color: #dcfce7 !important;
+
+
     color: #14532d !important;
+
+
     border: 1px solid #16a34a !important;
+
+
     font-weight: 600;
+
+
   }
+
+
   .estado-inasistente {
+
+
     background-color: #fee2e2 !important;
+
+
     color: #7f1d1d !important;
+
+
     border: 1px solid #dc2626 !important;
+
+
     font-weight: 600;
+
+
   }
+
+
   .estado-retraso {
+
+
     background-color: #fef3c7 !important;
+
+
     color: #78350f !important;
+
+
     border: 1px solid #d97706 !important;
+
+
     font-weight: 600;
+
+
   }
+
+
   .estado-justificada {
+
+
     background-color: #dbeafe !important;
+
+
     color: #1e3a8a !important;
+
+
     border: 1px solid #2563eb !important;
+
+
     font-weight: 600;
+
+
   }
+
+
 </style>
+
+
 </head>
+
+
 <body>
+
+
   <header class="topbar">
+
+
     <div class="topbar-brand">
+
+
       <button type="button" class="hamburger-btn no-print" title="Desplegar / ocultar menú lateral" onclick="toggleMenuLateral()">&#9776;</button>
+
+
       <span>{{ centro.nombre_escuela }}</span>
+
+
       <span class="rol-pill">{{ usuario.rol }}</span>
+
+
       <span>{{ usuario.nombre_completo }} ({{ usuario.cedula }})</span>
+
+
     </div>
+
+
     <div class="topbar-controls">
+
+
       <form method="get" action="/panel" style="display:flex; align-items:center; gap:6px; margin:0;">
+
+
         <label for="ano_id" style="font-size:12px;">Año Escolar:</label>
+
+
         <select id="ano_id" name="ano_id" onchange="this.form.submit()">
+
+
           {% for a in anos %}
+
+
           <option value="{{ a.id }}" {% if ano_seleccionado and a.id == ano_seleccionado.id %}selected{% endif %}>
+
+
             {{ a.nombre }} {% if a.cerrado %}(Cerrado){% else %}(Activo){% endif %}
+
+
           </option>
+
+
           {% endfor %}
+
+
         </select>
+
+
       </form>
+
+
       <button type="button" class="btn-top" onclick="verSeccion('boletines'); window.print();">Imprimir Boletín</button>
+
+
       <a href="/logout">Cerrar sesión</a>
+
+
     </div>
+
+
   </header>
 
+
+
+
+
   <div id="shell" class="shell">
+
+
     <nav class="sidebar no-print">
+
+
       <button type="button" class="group-btn" onclick="toggleGrupo('grp-alumnado', this)">
+
+
         <span>Alumnado y Matrícula</span><span>▾</span>
+
+
       </button>
+
+
       <div id="grp-alumnado" class="group-items">
+
+
         <button class="menu-item {% if not matricula_editar %}active{% endif %}" onclick="verSeccion('alumnado', this)">Ficha de Alumnado</button>
+
+
         {% if usuario.rol in ["director", "coordinador"] %}
+
+
         <button class="menu-item" onclick="verSeccion('matricula_form', this)">Matricular Alumno</button>
+
+
         {% if matricula_editar %}
+
+
         <button class="menu-item active" onclick="verSeccion('editar_matricula', this)">Editar Matrícula</button>
+
+
         {% endif %}
+
+
         {% endif %}
+
+
       </div>
+
+
+
+
 
       <button type="button" class="group-btn" onclick="toggleGrupo('grp-eval', this)">
+
+
         <span>Evaluación y Boletines</span><span>▾</span>
+
+
       </button>
+
+
       <div id="grp-eval" class="group-items">
+
+
         <button class="menu-item" onclick="verSeccion('evaluacion', this)">Cuaderno de Evaluación</button>
+
+
         <button class="menu-item" onclick="verSeccion('boletines', this)">Boletines del Curso</button>
+
+
       </div>
+
+
+
+
 
       <button type="button" class="group-btn" onclick="toggleGrupo('grp-orga', this)">
+
+
         <span>Organización y Convivencia</span><span>▾</span>
+
+
       </button>
+
+
       <div id="grp-orga" class="group-items">
+
+
         <button class="menu-item" onclick="verSeccion('horario', this)">Horario Semanal</button>
+
+
         <button class="menu-item" onclick="verSeccion('faltas', this)">Faltas y Justificaciones</button>
+
+
         <button class="menu-item" onclick="verSeccion('partes', this)">Partes Disciplinarios</button>
+
+
         <button class="menu-item" onclick="verSeccion('avisos', this)">Avisos del Centro</button>
+
+
         {% if usuario.rol in ["director", "coordinador", "admin", "administrador", "directivo"] %}
+
+
         <button class="menu-item" onclick="verSeccion('galeria', this)">Galer?a Web</button>
+
+
         {% endif %}
+
+
       </div>
+
+
+
+
 
       {% if usuario.rol in ["director", "coordinador"] %}
+
+
       <button type="button" class="group-btn" onclick="toggleGrupo('grp-admin', this)">
+
+
         <span>Centro y Usuarios</span><span>▾</span>
+
+
       </button>
+
+
       <div id="grp-admin" class="group-items">
+
+
         <button class="menu-item" onclick="verSeccion('asignaciones', this)">Asignación de Docentes</button>
+
+
         {% if usuario.rol == "director" %}
+
+
         <button class="menu-item" onclick="verSeccion('centro', this)">Nombre de la Escuela</button>
+
+
         <button class="menu-item" onclick="verSeccion('usuarios', this)">Usuarios y Claves</button>
+
+
         <button class="menu-item" onclick="verSeccion('anos', this)">Años Escolares</button>
+
+
         {% endif %}
+
+
       </div>
+
+
       {% endif %}
+
+
     </nav>
 
+
+
+
+
     <main class="workspace">
+
+
       <!-- EDITAR MATRÍCULA Y FICHA DEL ALUMNO -->
+
+
       {% if usuario.rol in ["director", "coordinador"] and matricula_editar %}
+
+
       {% set me = matricula_editar.estudiante %}
+
+
       <section id="view-editar_matricula" class="section-view active">
+
+
         <div class="box">
+
+
           <div class="box-head">
+
+
             Editar Matrícula y Datos del Alumno — {{ me.nombres }} {{ me.apellidos }} (C.E.: {{ me.cedula_escolar }})
+
+
           </div>
+
+
           <div class="box-body">
+
+
             <form method="post" action="/matriculas/{{ matricula_editar.id }}/actualizar" enctype="multipart/form-data" class="grid-inputs">
+
+
               <div>
+
+
                 <label class="lbl">Nombres *</label>
+
+
                 <input type="text" name="nombres" value="{{ me.nombres }}" required />
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Apellidos *</label>
+
+
                 <input type="text" name="apellidos" value="{{ me.apellidos }}" required />
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Sexo (Masculino / Femenino) *</label>
+
+
                 <select name="sexo" required>
+
+
                   <option value="Masculino" {% if me.sexo == "Masculino" %}selected{% endif %}>Masculino</option>
+
+
                   <option value="Femenino" {% if me.sexo == "Femenino" %}selected{% endif %}>Femenino</option>
+
+
                 </select>
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Nombre de Madre o Padre *</label>
+
+
                 <input type="text" name="nombre_madre_padre" value="{{ me.nombre_madre_padre or '' }}" required />
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Nombre del Representante Legal *</label>
+
+
                 <input type="text" name="representante_legal" value="{{ me.representante_legal or '' }}" placeholder="Ej. Carmen Díaz (Abuela), tía, padre..." required />
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Número de Contacto *</label>
+
+
                 <input type="text" name="numero_contacto" value="{{ me.numero_contacto or '' }}" required />
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Correo Electrónico Personal</label>
+
+
                 <input type="email" name="correo_personal" value="{{ me.correo_personal or '' }}" placeholder="Ej. alumno@correo.com" />
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Usuario de Acceso al Portal (Cuenta Familia) *</label>
+
+
                 <select name="representante_id" required>
+
+
                   {% for rep in representantes %}
+
+
                   <option value="{{ rep.id }}" {% if me.representante_id == rep.id %}selected{% endif %}>
+
+
                     {{ rep.nombre_completo }} ({{ rep.cedula }})
+
+
                   </option>
+
+
                   {% endfor %}
+
+
                 </select>
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Grado / Año *</label>
+
+
                 <select name="grado_ano" required>
+
+
                   <option value="1er Año" {% if matricula_editar.grado_ano == "1er Año" %}selected{% endif %}>1er Año</option>
+
+
                   <option value="2do Año" {% if matricula_editar.grado_ano == "2do Año" %}selected{% endif %}>2do Año</option>
+
+
                   <option value="3er Año" {% if matricula_editar.grado_ano == "3er Año" %}selected{% endif %}>3er Año</option>
+
+
                   <option value="4to Año" {% if matricula_editar.grado_ano == "4to Año" %}selected{% endif %}>4to Año</option>
+
+
                 </select>
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Sección *</label>
+
+
                 <select name="seccion" required>
+
+
                   <option value="A" {% if matricula_editar.seccion == "A" %}selected{% endif %}>A</option>
+
+
                   <option value="B" {% if matricula_editar.seccion == "B" %}selected{% endif %}>B</option>
+
+
                   <option value="C" {% if matricula_editar.seccion == "C" %}selected{% endif %}>C</option>
+
+
                   <option value="D" {% if matricula_editar.seccion == "D" %}selected{% endif %}>D</option>
+
+
                 </select>
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Nueva Foto (opcional)</label>
+
+
                 <input type="file" name="foto" accept="image/jpeg,image/png,image/webp" />
+
+
               </div>
+
+
               <div style="grid-column: 1 / -1;">
+
+
                 <label class="lbl">Dirección *</label>
+
+
                 <input type="text" name="direccion" value="{{ me.direccion or '' }}" required />
+
+
               </div>
+
+
               <div style="grid-column: 1 / -1;">
+
+
                 <label class="lbl">Alergias</label>
+
+
                 <textarea name="alergias" placeholder="Alergias conocidas...">{{ me.alergias or '' }}</textarea>
+
+
               </div>
+
+
               <div style="display:flex; gap:8px; align-items:center;">
+
+
                 <button type="submit" class="btn-save">Guardar Cambios</button>
+
+
                 <a class="btn-cancel" href="/panel?ano_id={{ ano_seleccionado.id if ano_seleccionado else '' }}">Cancelar</a>
+
+
               </div>
+
+
             </form>
+
+
           </div>
+
+
         </div>
+
+
       </section>
+
+
       {% endif %}
+
+
+
+
 
       <!-- FICHA DE ALUMNADO -->
+
+
       <section id="view-alumnado" class="section-view {% if not matricula_editar %}active{% endif %}">
+
+
         <div class="box no-print">
+
+
           <div class="box-head">Buscar Alumno en la Ficha</div>
+
+
           <div class="box-body">
+
+
             <form method="get" action="/panel" class="grid-inputs">
+
+
               {% if ano_seleccionado %}
+
+
               <input type="hidden" name="ano_id" value="{{ ano_seleccionado.id }}" />
+
+
               {% endif %}
+
+
               <div style="grid-column: span 2;">
+
+
                 <label class="lbl">Nombre, Apellido o Cédula Escolar</label>
+
+
                 <input type="text" name="buscar_alumno" value="{{ buscar_alumno }}" placeholder="Ej. Valery, Pérez o 11412345678" />
+
+
               </div>
+
+
               <div style="display:flex; gap:6px;">
+
+
                 <button type="submit" class="btn-save">Buscar</button>
+
+
                 <a class="btn-cancel" href="/panel?ano_id={{ ano_seleccionado.id if ano_seleccionado else '' }}">Limpiar</a>
+
+
               </div>
+
+
             </form>
+
+
           </div>
+
+
         </div>
+
+
+
+
 
         <!-- BANDEJA SOLICITUDES PENDIENTES -->
+
+
         {% set pendientes = matriculas | selectattr("estatus_cierre", "equalto", "pendiente") | list %}
+
+
         {% if pendientes %}
+
+
         <div class="box" style="border-left:4px solid #d97706; margin-bottom:14px;">
+
+
           <div class="box-head">Solicitudes de Matr?cula Pendientes por Revisar ({ pendientes | length })</div>
+
+
           <div class="box-body">
+
+
             <div class="tbl-wrap">
+
+
               <table class="alboran-tbl">
+
+
                 <thead>
+
+
                   <tr>
+
+
                     <th>Alumno</th>
+
+
                     <th>C?dula Escolar</th>
+
+
                     <th>Grado / Secci?n</th>
+
+
                     <th>Representante</th>
+
+
                     <th>Acci?n de la Escuela</th>
+
+
                   </tr>
+
+
                 </thead>
+
+
                 <tbody>
+
+
                   {% for p in pendientes %}
+
+
                   <tr>
+
+
                     <td><strong>{{ p.estudiante.apellidos }} {{ p.estudiante.nombres }}</strong></td>
+
+
                     <td>{{ p.estudiante.cedula_escolar }}</td>
+
+
                     <td>{{ p.grado_ano }} "{{ p.seccion }}"</td>
+
+
                     <td>{{ p.estudiante.representante_legal or "-" }}</td>
+
+
                     <td>
+
+
                       <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+
+
                         {% if usuario.rol in ["director", "coordinador"] %}
+
+
                         <form method="post" action="/matriculas/{{ p.id }}/aceptar" style="display:inline; margin:0;">
+
+
                           <button type="submit" class="btn-save" style="padding:4px 10px; font-size:0.82rem;">Aceptar</button>
+
+
                         </form>
+
+
                         <form method="post" action="/matriculas/{{ p.id }}/rechazar" style="display:inline; margin:0;" onsubmit="return confirm('?Rechazar y eliminar esta solicitud de matr?cula?');">
+
+
                           <button type="submit" class="btn-cancel" style="padding:4px 10px; font-size:0.82rem; color:#b42318;">Rechazar</button>
+
+
                         </form>
+
+
                         {% else %}
+
+
                         <span style="font-size:0.8rem; color:#667085;">Pendiente de revisi?n</span>
+
+
                         {% endif %}
+
+
                       </div>
+
+
                     </td>
+
+
                   </tr>
+
+
                   {% endfor %}
+
+
                 </tbody>
+
+
               </table>
+
+
             </div>
+
+
           </div>
+
+
         </div>
+
+
         {% endif %}
+
+
 <div class="box">
+
+
           <div class="box-head">
+
+
             {{ centro.nombre_escuela }} — Datos de Matrícula del Alumnado ({{ ano_seleccionado.nombre if ano_seleccionado else "" }})
+
+
           </div>
+
+
           <div class="box-body tbl-wrap">
+
+
             <table class="alboran-tbl">
+
+
               <thead>
+
+
                 <tr>
+
+
                   <th>Foto</th>
+
+
                   <th>Cédula Escolar</th>
+
+
                   <th>Nombre y Apellidos</th>
+
+
                   <th>Sexo</th>
+
+
                   <th>Nombre Madre o Padre</th>
+
+
                   <th>Representante Legal</th>
+
+
                   <th>Número de Contacto</th>
+
+
                   <th>Correo Personal</th>
+
+
                   <th>Alergias</th>
+
+
                   <th>Dirección</th>
+
+
                   <th>Cuenta Portal</th>
+
+
                   <th>Curso / Sec.</th>
+
+
                   {% if usuario.rol in ["director", "coordinador"] %}
+
+
                   <th>Acción</th>
+
+
                   {% endif %}
+
+
                 </tr>
+
+
               </thead>
+
+
               <tbody>
+
+
                 {% for m in matriculas_ficha %}
+
+
                 {% set e = m.estudiante %}
+
+
                 <tr>
+
+
                   <td>
+
+
                     {% if e.foto_filename %}
+
+
                       <img class="foto-thumb" src="/static/fotos_alumnos/{{ e.foto_filename }}" alt="Foto de {{ e.nombres }}" />
+
+
                     {% else %}
+
+
                       <div class="foto-placeholder">Sin foto</div>
+
+
                     {% endif %}
+
+
                   </td>
+
+
                   <td><strong>{{ e.cedula_escolar }}</strong></td>
+
+
                   <td><strong>{{ e.nombres }} {{ e.apellidos }}</strong></td>
+
+
                   <td>{{ e.sexo or "-" }}</td>
+
+
                   <td>{{ e.nombre_madre_padre or "-" }}</td>
+
+
                   <td><strong>{{ e.representante_legal or "-" }}</strong></td>
+
+
                   <td>{{ e.numero_contacto or "-" }}</td>
+
+
                   <td>{{ e.correo_personal or "-" }}</td>
+
+
                   <td>{{ e.alergias or "Ninguna" }}</td>
+
+
                   <td>{{ e.direccion or "-" }}</td>
+
+
                   <td>{{ e.representante.nombre_completo if e.representante else "-" }}</td>
+
+
                   <td>{{ m.grado_ano }} "{{ m.seccion }}"</td>
+
+
                   {% if usuario.rol in ["director", "coordinador"] %}
+
+
                   <td>
+
+
                     <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+
+
                       <a class="btn-edit" href="/panel?ano_id={{ ano_seleccionado.id if ano_seleccionado else '' }}&editar_id={{ m.id }}">Editar</a>
+
+
                       {% if m.estatus_cierre == "pendiente" %}
+
+
                         <span style="font-size:0.78rem; font-weight:700; color:#92400e; background:#fef3c7; padding:2px 8px; border-radius:999px;">Pendiente</span>
+
+
                         <form method="post" action="/matriculas/{{ m.id }}/aceptar" style="display:inline; margin:0;">
+
+
                           <button type="submit" class="btn-save" style="padding:4px 8px; font-size:0.8rem;">Aceptar</button>
+
+
                         </form>
+
+
                         <form method="post" action="/matriculas/{{ m.id }}/rechazar" style="display:inline; margin:0;" onsubmit="return confirm('?Rechazar y eliminar esta solicitud de matr?cula?');">
+
+
                           <button type="submit" class="btn-cancel" style="padding:4px 8px; font-size:0.8rem; color:#b42318;">Rechazar</button>
+
+
                         </form>
+
+
                       {% elif m.estatus_cierre == "baja" %}
+
+
                         <span style="font-size:0.78rem; font-weight:700; color:#b42318; background:#fef3f2; padding:2px 8px; border-radius:999px;">De baja</span>
+
+
                       {% else %}
+
+
                         <form method="post" action="/matriculas/{{ m.id }}/baja" style="display:inline; margin:0;" onsubmit="return confirm('?Dar de baja la matr?cula de {{ m.estudiante.nombres }} {{ m.estudiante.apellidos }}?');">
+
+
                           <button type="submit" class="btn-cancel" style="padding:4px 8px; font-size:0.8rem;">Dar de baja</button>
+
+
                         </form>
+
+
                       {% endif %}
+
+
                       <form method="post" action="/matriculas/{{ m.id }}/eliminar" style="display:inline; margin:0;" onsubmit="return confirm('?Eliminar permanentemente esta matr?cula y sus registros asociados?');">
+
+
                         <button type="submit" class="btn-cancel" style="padding:4px 8px; font-size:0.8rem; color:#b42318; border-color:#fecdca;">Eliminar</button>
+
+
                       </form>
+
+
                     </div>
+
+
                   </td>
+
+
                   {% endif %}
+
+
                 </tr>
+
+
                 {% else %}
+
+
                 <tr>
+
+
                   <td colspan="{% if usuario.rol in ['director', 'coordinador'] %}13{% else %}12{% endif %}">
+
+
                     {% if buscar_alumno %}
+
+
                       No se encontraron alumnos que coincidan con "{{ buscar_alumno }}".
+
+
                     {% else %}
+
+
                       No hay alumnos matriculados en este año escolar.
+
+
                     {% endif %}
+
+
                   </td>
+
+
                 </tr>
+
+
                 {% endfor %}
+
+
               </tbody>
+
+
             </table>
+
+
           </div>
+
+
         </div>
+
+
       <div id="box-editar-usuario" class="box" style="display:none; margin-top:14px;">
+
+
         <div class="box-head">Editar Usuario Seleccionado</div>
+
+
         <div class="box-body">
+
+
           <form id="form-editar-usuario" method="post" action="" class="grid-inputs">
+
+
             <div>
+
+
               <label class="lbl">Cédula</label>
+
+
               <input id="edit-usr-cedula" name="cedula" class="inp" required />
+
+
             </div>
+
+
             <div>
+
+
               <label class="lbl">Nombre Completo</label>
+
+
               <input id="edit-usr-nombre" name="nombre_completo" class="inp" required />
+
+
             </div>
+
+
             <div>
+
+
               <label class="lbl">Rol</label>
+
+
               <select id="edit-usr-rol" name="rol" class="inp">
+
+
                 <option value="director">director</option>
+
+
                 <option value="coordinador">coordinador</option>
+
+
                 <option value="docente">docente</option>
+
+
                 <option value="representante">representante</option>
+
+
               </select>
+
+
             </div>
+
+
             <div>
+
+
               <label class="lbl">Estado</label>
+
+
               <select id="edit-usr-activo" name="activo" class="inp">
+
+
                 <option value="true">Activo</option>
+
+
                 <option value="false">Inactivo</option>
+
+
               </select>
+
+
             </div>
+
+
             <div>
+
+
               <label class="lbl">Nueva Contraseña (opcional)</label>
+
+
               <input id="edit-usr-password" name="password" type="password" class="inp" placeholder="Dejar vacío para mantener" />
+
+
             </div>
+
+
             <div style="display:flex; gap:8px; align-items:flex-end;">
+
+
               <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+
+
               <button type="button" class="btn" onclick="cerrarEditarUsuario()">Cancelar</button>
+
+
             </div>
+
+
           </form>
+
+
         </div>
+
+
       </div>
+
+
       <script>
+
+
         function abrirEditarUsuario(btn) {
+
+
           const box = document.getElementById("box-editar-usuario");
+
+
           const form = document.getElementById("form-editar-usuario");
+
+
           form.action = "/usuarios/" + btn.dataset.id + "/editar";
+
+
           document.getElementById("edit-usr-cedula").value = btn.dataset.cedula;
+
+
           document.getElementById("edit-usr-nombre").value = btn.dataset.nombre;
+
+
           document.getElementById("edit-usr-rol").value = btn.dataset.rol;
+
+
           document.getElementById("edit-usr-activo").value = btn.dataset.activo;
+
+
           document.getElementById("edit-usr-password").value = "";
+
+
           box.style.display = "block";
+
+
           box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+
         }
+
+
         function cerrarEditarUsuario() {
+
+
           document.getElementById("box-editar-usuario").style.display = "none";
+
+
         }
+
+
       </script>
+
+
       </section>
+
+
+
+
 
       <!-- MATRICULAR ALUMNO -->
+
+
       {% if usuario.rol in ["director", "coordinador"] and ano_seleccionado %}
+
+
       <section id="view-matricula_form" class="section-view">
+
+
         <div class="box">
+
+
           <div class="box-head">Matrícula de Alumno — {{ ano_seleccionado.nombre }}</div>
+
+
           <div class="box-body">
+
+
             <form method="post" action="/estudiantes/inscribir-matricula" enctype="multipart/form-data" class="grid-inputs">
+
+
               <input type="hidden" name="ano_escolar_id" value="{{ ano_seleccionado.id }}" />
 
+
+
+
+
               <div>
+
+
                 <label class="lbl">Cédula Escolar *</label>
+
+
                 <input type="text" name="cedula_escolar" placeholder="Ej. 11412345678" required />
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Nombres *</label>
+
+
                 <input type="text" name="nombres" placeholder="Nombres del alumno" required />
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Apellidos *</label>
+
+
                 <input type="text" name="apellidos" placeholder="Apellidos del alumno" required />
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Sexo (Masculino / Femenino) *</label>
+
+
                 <select name="sexo" required>
+
+
                   <option value="Masculino">Masculino</option>
+
+
                   <option value="Femenino">Femenino</option>
+
+
                 </select>
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Nombre de Madre o Padre *</label>
+
+
                 <input type="text" name="nombre_madre_padre" placeholder="Nombre completo de la madre o padre" required />
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Nombre del Representante Legal *</label>
+
+
                 <input type="text" name="representante_legal" placeholder="Ej. Carmen Díaz (Abuela), tía, padre..." required />
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Número de Contacto *</label>
+
+
                 <input type="text" name="numero_contacto" placeholder="Ej. 0414-0000000" required />
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Correo Electrónico Personal</label>
+
+
                 <input type="email" name="correo_personal" placeholder="Ej. alumno@correo.com" />
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Usuario de Acceso al Portal (Cuenta Familia) *</label>
+
+
                 <select name="representante_id" required>
+
+
                   {% for rep in representantes %}
+
+
                   <option value="{{ rep.id }}">{{ rep.nombre_completo }} ({{ rep.cedula }})</option>
+
+
                   {% endfor %}
+
+
                 </select>
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Grado / Año *</label>
+
+
                 <select name="grado_ano" required>
+
+
                   <option value="1er Año">1er Año</option>
+
+
                   <option value="2do Año">2do Año</option>
+
+
                   <option value="3er Año">3er Año</option>
+
+
                   <option value="4to Año">4to Año</option>
+
+
                 </select>
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Sección *</label>
+
+
                 <select name="seccion" required>
+
+
                   <option value="A">A</option>
+
+
                   <option value="B">B</option>
+
+
                   <option value="C">C</option>
+
+
                   <option value="D">D</option>
+
+
                 </select>
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Foto del Alumno</label>
+
+
                 <input type="file" name="foto" accept="image/jpeg,image/png,image/webp" />
+
+
               </div>
+
+
               <div style="grid-column: 1 / -1;">
+
+
                 <label class="lbl">Dirección *</label>
+
+
                 <input type="text" name="direccion" placeholder="Sector, calle, casa / edificio" required />
+
+
               </div>
+
+
               <div style="grid-column: 1 / -1;">
+
+
                 <label class="lbl">Alergias</label>
+
+
                 <textarea name="alergias" placeholder="Indique si tiene alergias a medicamentos, alimentos, picaduras, etc."></textarea>
+
+
               </div>
+
+
               <div>
+
+
                 <button type="submit" class="btn-save" style="width:100%;">Guardar Matrícula</button>
+
+
               </div>
+
+
             </form>
+
+
           </div>
+
+
         </div>
+
+
       </section>
+
+
       {% endif %}
 
+
+
+
+
       <!-- CUADERNO DE EVALUACIÓN MATRICIAL -->
+
+
       <section id="view-evaluacion" class="section-view">
+
+
         {% if usuario.rol == "docente" %}
+
+
         <div class="box">
+
+
           <div class="box-head">Mis Materias y Secciones Asignadas ({{ ano_seleccionado.nombre if ano_seleccionado else "" }})</div>
+
+
           <div class="box-body">
+
+
             {% if asignaciones_docente %}
+
+
               {% for a in (asignaciones_docente or []) %}
+
+
                 <span class="rol-pill" style="background:#0f3d68; margin-right:6px;">{{ a.asignatura }} — {{ a.grado_ano }} "{{ a.seccion }}"</span>
+
+
               {% endfor %}
+
+
             {% else %}
+
+
               <span>Aún no tienes materias asignadas en este año escolar. Solicita a Dirección o Coordinación que te asignen tus cursos.</span>
+
+
             {% endif %}
+
+
           </div>
+
+
         </div>
+
+
         {% endif %}
 
+
+
+
+
         <div class="box no-print">
+
+
           <div class="box-head">Filtrar Cuaderno de Evaluación</div>
+
+
           <div class="box-body">
+
+
             <form method="get" action="/panel" class="grid-inputs">
+
+
               {% if ano_seleccionado %}
+
+
               <input type="hidden" name="ano_id" value="{{ ano_seleccionado.id }}" />
+
+
               {% endif %}
+
+
               <div>
+
+
                 <label class="lbl">Curso / Sección</label>
+
+
                 <input type="text" name="filtro_curso" value="{{ filtro_curso }}" placeholder="Ej. 1er Año A" />
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Asignatura</label>
+
+
                 <select name="filtro_materia">
+
+
                   <option value="">Todas las materias</option>
+
+
                   {% for mat in asignaturas_base %}
+
+
                   <option value="{{ mat }}" {% if filtro_materia == mat %}selected{% endif %}>{{ mat }}</option>
+
+
                   {% endfor %}
+
+
                 </select>
+
+
               </div>
+
+
               <div style="display:flex; gap:6px;">
+
+
                 <button type="submit" class="btn-save">Filtrar</button>
+
+
                 <a class="btn-cancel" href="/panel?ano_id={{ ano_seleccionado.id if ano_seleccionado else '' }}">Limpiar</a>
+
+
               </div>
+
+
             </form>
+
+
           </div>
+
+
         </div>
 
-        {% if usuario.rol in ["docente", "director"] %}
-        <div class="box no-print">
-          <div class="box-head">Introducir Calificación (Escala 1 - 20)</div>
+
+
+
 
         {% if usuario.rol in ["docente", "director"] %}
+
+
+        <div class="box no-print">
+
+
+          <div class="box-head">Introducir Calificación (Escala 1 - 20)</div>
+
+
+
+
+
+        {% if usuario.rol in ["docente", "director"] %}
+
+
         <div class="box no-print" style="margin-bottom:14px;">
+
+
           <div class="box-head">1. Seleccionar Clase y Colocar Calificaciones por Fecha Actual</div>
+
+
           <div class="box-body">
+
+
             <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:flex-end; margin-bottom:14px;">
+
+
               <div>
+
+
                 <label class="lbl">Fecha Actual de Evaluaci?n</label>
+
+
                 <input type="date" id="fecha-clase-evaluacion" class="inp" required />
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Clase (Grado/A?o, Secci?n y Asignatura)</label>
+
+
                 <select id="selector-clase-evaluacion" class="inp" onchange="seleccionarClaseEvaluacion(this.value)">
+
+
                   <option value="">-- Elige una clase --</option>
+
+
                 </select>
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Momento / Lapso</label>
+
+
                 <select id="lapso-clase-evaluacion" class="inp" onchange="refrescarTablaEvaluacion()">
+
+
                   <option value="1er Momento">1er Momento</option>
+
+
                   <option value="2do Momento">2do Momento</option>
+
+
                   <option value="3er Momento">3er Momento</option>
+
+
                 </select>
+
+
               </div>
+
+
             </div>
+
+
+
+
 
             <div id="tarjetas-clases-evaluacion" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(210px, 1fr)); gap:10px; margin-bottom:16px;"></div>
 
+
+
+
+
             <div class="tbl-wrap">
+
+
               <table class="alboran-tbl" id="tabla-evaluacion-clase">
+
+
                 <thead id="thead-evaluacion-clase">
+
+
                   <tr>
+
+
                     <th>Nombres y Apellidos</th>
+
+
                     <th>Fecha Actual</th>
+
+
                   </tr>
+
+
                 </thead>
+
+
                 <tbody id="tbody-evaluacion-clase">
+
+
                   <tr><td colspan="2">{% if usuario.rol == "docente" %}Selecciona una de tus clases asignadas arriba para mostrar la lista de alumnos.{% else %}Selecciona una clase arriba para mostrar la lista de alumnos.{% endif %}</td></tr>
+
+
                 </tbody>
+
+
               </table>
+
+
             </div>
+
+
           </div>
+
+
         </div>
 
+
+
+
+
         <script>
+
+
           (function() {
+
+
             const fechaEvalInput = document.getElementById("fecha-clase-evaluacion");
+
+
             const selectorEval = document.getElementById("selector-clase-evaluacion");
+
+
             const lapsoEval = document.getElementById("lapso-clase-evaluacion");
+
+
             const tarjetasEval = document.getElementById("tarjetas-clases-evaluacion");
+
+
             const theadEval = document.getElementById("thead-evaluacion-clase");
+
+
             const tbodyEval = document.getElementById("tbody-evaluacion-clase");
+
+
             if (!fechaEvalInput || !selectorEval || !tbodyEval) return;
 
+
+
+
+
             if (!fechaEvalInput.value) {
+
+
               const hoy = new Date();
+
+
               const yyyy = hoy.getFullYear();
+
+
               const mm = String(hoy.getMonth() + 1).padStart(2, "0");
+
+
               const dd = String(hoy.getDate()).padStart(2, "0");
+
+
               fechaEvalInput.value = `${yyyy}-${mm}-${dd}`;
+
+
             }
+
+
+
+
 
             const rolEval = {{ usuario.rol | tojson }};
+
+
             const asignacionesEval = [
+
+
               {% for a in (asignaciones_docente or []) %}
+
+
               {
+
+
                 gradoAno: {{ (a.grado_ano or "") | tojson }},
+
+
                 seccion: {{ (a.seccion or "") | tojson }},
+
+
                 asignatura: {{ (a.asignatura or "") | tojson }}
+
+
               }{% if not loop.last %},{% endif %}
+
+
               {% endfor %}
+
+
             ];
+
+
             const asignaturasBaseEval = {{ asignaturas_base | tojson }};
+
+
             const matriculasEval = [
+
+
               {% for m in matriculas_cuaderno %}
+
+
               {
+
+
                 matriculaId: {{ m.id }},
+
+
                 nombre: {{ ((m.estudiante.nombres if m.estudiante else "") ~ " " ~ (m.estudiante.apellidos if m.estudiante else "")) | trim | tojson }},
+
+
                 gradoAno: {{ (m.grado_ano or "") | tojson }},
+
+
                 seccion: {{ (m.seccion or "") | tojson }}
+
+
               }{% if not loop.last %},{% endif %}
+
+
               {% endfor %}
+
+
             ];
+
+
             const calificacionesPrevias = [
+
+
               {% for c in calificaciones %}
+
+
               {
+
+
                 id: {{ c.id }},
+
+
                 matriculaId: {{ c.matricula_id }},
+
+
                 asignatura: {{ (c.asignatura or "") | tojson }},
+
+
                 lapso: {{ (c.lapso or "1er Momento") | tojson }},
+
+
                 nota20: {{ c.nota_20 if c.nota_20 is not none else "null" }},
+
+
                 fecha: {{ (c.fecha or "") | tojson }}
+
+
               }{% if not loop.last %},{% endif %}
+
+
               {% endfor %}
+
+
             ];
+
+
+
+
 
             const clasesEvalMap = new Map();
+
+
             const norm = (s) => (s || "").trim().toLowerCase();
 
+
+
+
+
             if (rolEval === "docente") {
+
+
               for (const a of asignacionesEval) {
+
+
                 const gNorm = norm(a.gradoAno);
+
+
                 const sNorm = norm(a.seccion);
+
+
                 const asig = (a.asignatura || "").trim() || "Asignatura";
+
+
                 const alumnosClase = matriculasEval.filter((m) => {
+
+
                   const okG = !gNorm || norm(m.gradoAno) === gNorm;
+
+
                   const okS = !sNorm || sNorm === "todas" || norm(m.seccion) === sNorm;
+
+
                   return okG && okS;
+
+
                 });
+
+
                 const clave = `${a.gradoAno}__${a.seccion}__${asig}`;
+
+
                 clasesEvalMap.set(clave, {
+
+
                   gradoAno: a.gradoAno,
+
+
                   seccion: a.seccion,
+
+
                   asignatura: asig,
+
+
                   alumnos: alumnosClase
+
+
                 });
+
+
               }
+
+
             } else {
+
+
               const gruposCurso = new Map();
+
+
               for (const m of matriculasEval) {
+
+
                 const k = `${norm(m.gradoAno)}__${norm(m.seccion)}`;
+
+
                 if (!gruposCurso.has(k)) {
+
+
                   gruposCurso.set(k, { gradoAno: m.gradoAno, seccion: m.seccion, alumnos: [] });
+
+
                 }
+
+
                 gruposCurso.get(k).alumnos.push(m);
+
+
               }
+
+
               for (const [, grp] of gruposCurso.entries()) {
+
+
                 for (const asig of asignaturasBaseEval) {
+
+
                   const clave = `${grp.gradoAno}__${grp.seccion}__${asig}`;
+
+
                   clasesEvalMap.set(clave, {
+
+
                     gradoAno: grp.gradoAno,
+
+
                     seccion: grp.seccion,
+
+
                     asignatura: asig,
+
+
                     alumnos: grp.alumnos
+
+
                   });
+
+
                 }
+
+
               }
+
+
             }
+
+
+
+
 
             if (tarjetasEval) tarjetasEval.innerHTML = "";
+
+
             for (const [clave, info] of clasesEvalMap.entries()) {
+
+
               const opt = document.createElement("option");
+
+
               opt.value = clave;
+
+
               opt.textContent = `${info.gradoAno} "${info.seccion}" ? ${info.asignatura} (${info.alumnos.length})`;
+
+
               selectorEval.appendChild(opt);
 
+
+
+
+
               if (tarjetasEval) {
+
+
                 const card = document.createElement("button");
+
+
                 card.type = "button";
+
+
                 card.className = "btn btn-sm";
+
+
                 card.style.cssText = "text-align:left; padding:10px; display:block; width:100%;";
+
+
                 card.innerHTML = `<strong>${info.gradoAno} "${info.seccion}"</strong><br><small>${info.asignatura} ? ${info.alumnos.length} alumnos</small>`;
+
+
                 card.onclick = () => {
+
+
                   selectorEval.value = clave;
+
+
                   window.seleccionarClaseEvaluacion(clave);
+
+
                 };
+
+
                 tarjetasEval.appendChild(card);
+
+
               }
+
+
             }
 
+
+
+
+
             window.seleccionarClaseEvaluacion = function(clave) {
+
+
               if (!clave || !clasesEvalMap.has(clave)) {
+
+
                 theadEval.innerHTML = '<tr><th>Nombres y Apellidos</th><th>Fecha Actual</th></tr>';
+
+
                 tbodyEval.innerHTML = '<tr><td colspan="2">Selecciona una clase arriba para mostrar la lista de alumnos.</td></tr>';
+
+
                 return;
+
+
               }
+
+
               const info = clasesEvalMap.get(clave);
+
+
               const fechaActual = fechaEvalInput.value || "";
+
+
               const lapsoActual = (lapsoEval && lapsoEval.value) ? lapsoEval.value : "1er Momento";
+
+
               const asigNorm = norm(info.asignatura);
+
+
+
+
 
               theadEval.innerHTML = `<tr><th>Nombres y Apellidos</th><th>Fecha Actual (${fechaActual || "sin fecha"}) ? ${info.asignatura}</th></tr>`;
 
+
+
+
+
               if (!info.alumnos.length) {
+
+
                 tbodyEval.innerHTML = '<tr><td colspan="2">No hay alumnos matriculados en esta clase.</td></tr>';
+
+
                 return;
+
+
               }
+
+
+
+
 
               let rowsHtml = "";
+
+
               for (const al of info.alumnos) {
+
+
                 const prev = calificacionesPrevias.find(
+
+
                   (c) => c.matriculaId === al.matriculaId
+
+
                     && norm(c.asignatura) === asigNorm
+
+
                     && (!fechaActual || !c.fecha || c.fecha === fechaActual)
+
+
                 );
+
+
                 if (prev) {
+
+
                   rowsHtml += `
+
+
                     <tr>
+
+
                       <td><strong>${al.nombre}</strong></td>
+
+
                       <td>
+
+
                         <form method="post" action="/calificaciones/${prev.id}/editar" style="display:flex; gap:6px; align-items:center; margin:0;">
+
+
                           <input type="hidden" name="fecha" class="campo-fecha-eval" value="${fechaActual}" />
-                          <input type="number" name="nota_20" step="0.01" min="1" max="20" value="${prev.nota20 ?? ""}" required class="inp" style="width:100px;" placeholder="1 - 20" />
+
+
+                          <input type="number" name="nota_20" step="0.01" min="1" max="20" value="${prev.nota20 ? ""}" required class="inp" style="width:100px;" placeholder="1 - 20" />
+
+
                           <button type="submit" class="btn btn-sm">Actualizar</button>
+
+
                         </form>
+
+
                       </td>
+
+
                     </tr>
+
+
                   `;
+
+
                 } else {
+
+
                   rowsHtml += `
+
+
                     <tr>
+
+
                       <td><strong>${al.nombre}</strong></td>
+
+
                       <td>
+
+
                         <form method="post" action="/calificaciones/guardar" style="display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin:0;">
+
+
                           <input type="hidden" name="matricula_id" value="${al.matriculaId}" />
+
+
                           <input type="hidden" name="asignatura" value="${info.asignatura}" />
+
+
                           <input type="hidden" name="lapso" class="campo-lapso-eval" value="${lapsoActual}" />
+
+
                           <input type="hidden" name="fecha" class="campo-fecha-eval" value="${fechaActual}" />
+
+
                           <input type="number" name="nota_20" step="0.01" min="0" max="20" required class="inp" style="width:105px;" placeholder="Calificaci?n" />
+
+
                           <input type="text" name="nota_diaria" class="inp" style="min-width:190px; flex:1;" placeholder="Nota diaria (${fechaActual || 'hoy'})..." />
+
+
                           <button type="submit" class="btn-save" style="padding:5px 10px; font-size:12px;">Guardar</button>
+
+
                         </form>
+
+
                       </td>
+
+
                     </tr>
+
+
                   `;
+
+
                 }
+
+
               }
+
+
               tbodyEval.innerHTML = rowsHtml;
+
+
             };
 
+
+
+
+
             window.refrescarTablaEvaluacion = function() {
+
+
               if (selectorEval && selectorEval.value) {
+
+
                 window.seleccionarClaseEvaluacion(selectorEval.value);
+
+
               }
+
+
             };
+
+
+
+
 
             fechaEvalInput.addEventListener("change", window.refrescarTablaEvaluacion);
 
+
+
+
+
             if (clasesEvalMap.size > 0) {
+
+
               const primera = clasesEvalMap.keys().next().value;
+
+
               selectorEval.value = primera;
+
+
               window.seleccionarClaseEvaluacion(primera);
+
+
             }
+
+
           })();
+
+
         </script>
+
+
         {% endif %}
 
+
+
+
+
         <div class="box">
+
+
         {% endif %}
+
+
           <div class="box-head">Cuaderno de Evaluación — Matriz por Momento y Definitiva</div>
+
+
           <div class="box-body tbl-wrap">
+
+
             <table class="alboran-tbl">
+
+
               <thead>
+
+
                 <tr>
+
+
                   <th>Foto</th>
+
+
                   <th>C.E.</th>
+
+
                   <th>Nombre y Apellidos</th>
+
+
                   <th>Curso / Sec.</th>
+
+
                   <th>Asignatura</th>
+
+
                   <th class="num-cell">1er Mom.</th>
+
+
                   <th class="num-cell">2do Mom.</th>
+
+
                   <th class="num-cell">3er Mom.</th>
+
+
                   <th class="num-cell">Definitiva</th>
+
+
                   <th class="num-cell">Estado</th>
+
+
                 </tr>
+
+
               </thead>
+
+
               <tbody>
+
+
                 {% for f in matriz_cuaderno %}
+
+
                 <tr>
+
+
                   <td>
+
+
                     {% if f.estudiante.foto_filename %}
+
+
                       <img class="foto-thumb" src="/static/fotos_alumnos/{{ f.estudiante.foto_filename }}" alt="Foto" />
+
+
                     {% else %}
+
+
                       <div class="foto-placeholder">—</div>
+
+
                     {% endif %}
+
+
                   </td>
+
+
                   <td>{{ f.estudiante.cedula_escolar }}</td>
+
+
                   <td><strong>{{ f.estudiante.nombres }} {{ f.estudiante.apellidos }}</strong></td>
+
+
                   <td>{{ f.matricula.grado_ano }} "{{ f.matricula.seccion }}"</td>
+
+
                   <td>{{ f.asignatura }}</td>
+
+
                   <td class="num-cell">{{ f.m1 if f.m1 is not none else "-" }}</td>
+
+
                   <td class="num-cell">{{ f.m2 if f.m2 is not none else "-" }}</td>
+
+
                   <td class="num-cell">{{ f.m3 if f.m3 is not none else "-" }}</td>
+
+
                   <td class="num-cell {% if f.definitiva is not none %}{{ 'ok-txt' if f.definitiva >= 10 else 'bad-txt' }}{% endif %}">
+
+
                     {{ f.definitiva if f.definitiva is not none else "-" }}
+
+
                   </td>
+
+
                   <td class="num-cell">{{ f.estado }}</td>
+
+
                 </tr>
+
+
                 {% else %}
+
+
                 <tr>
+
+
                   <td colspan="10">No hay registros que coincidan con el filtro o tus asignaciones actuales.</td>
+
+
                 </tr>
+
+
                 {% endfor %}
+
+
               </tbody>
+
+
             </table>
+
+
           </div>
+
+
         </div>
+
+
       <div id="box-editar-usuario" class="box" style="display:none; margin-top:14px;">
+
+
         <div class="box-head">Editar Usuario Seleccionado</div>
+
+
         <div class="box-body">
+
+
           <form id="form-editar-usuario" method="post" action="" class="grid-inputs">
+
+
             <div>
+
+
               <label class="lbl">Cédula</label>
+
+
               <input id="edit-usr-cedula" name="cedula" class="inp" required />
+
+
             </div>
+
+
             <div>
+
+
               <label class="lbl">Nombre Completo</label>
+
+
               <input id="edit-usr-nombre" name="nombre_completo" class="inp" required />
+
+
             </div>
+
+
             <div>
+
+
               <label class="lbl">Rol</label>
+
+
               <select id="edit-usr-rol" name="rol" class="inp">
+
+
                 <option value="director">director</option>
+
+
                 <option value="coordinador">coordinador</option>
+
+
                 <option value="docente">docente</option>
+
+
                 <option value="representante">representante</option>
+
+
               </select>
+
+
             </div>
+
+
             <div>
+
+
               <label class="lbl">Estado</label>
+
+
               <select id="edit-usr-activo" name="activo" class="inp">
+
+
                 <option value="true">Activo</option>
+
+
                 <option value="false">Inactivo</option>
+
+
               </select>
+
+
             </div>
+
+
             <div>
+
+
               <label class="lbl">Nueva Contraseña (opcional)</label>
+
+
               <input id="edit-usr-password" name="password" type="password" class="inp" placeholder="Dejar vacío para mantener" />
+
+
             </div>
+
+
             <div style="display:flex; gap:8px; align-items:flex-end;">
+
+
               <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+
+
               <button type="button" class="btn" onclick="cerrarEditarUsuario()">Cancelar</button>
+
+
             </div>
+
+
           </form>
+
+
         </div>
+
+
       </div>
+
+
       <script>
+
+
         function abrirEditarUsuario(btn) {
+
+
           const box = document.getElementById("box-editar-usuario");
+
+
           const form = document.getElementById("form-editar-usuario");
+
+
           form.action = "/usuarios/" + btn.dataset.id + "/editar";
+
+
           document.getElementById("edit-usr-cedula").value = btn.dataset.cedula;
+
+
           document.getElementById("edit-usr-nombre").value = btn.dataset.nombre;
+
+
           document.getElementById("edit-usr-rol").value = btn.dataset.rol;
+
+
           document.getElementById("edit-usr-activo").value = btn.dataset.activo;
+
+
           document.getElementById("edit-usr-password").value = "";
+
+
           box.style.display = "block";
+
+
           box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+
         }
+
+
         function cerrarEditarUsuario() {
+
+
           document.getElementById("box-editar-usuario").style.display = "none";
+
+
         }
+
+
       </script>
+
+
       </section>
+
+
+
+
 
       <!-- BOLETINES DEL CURSO -->
+
+
       <section id="view-boletines" class="section-view">
+
+
         <div class="box">
+
+
           <div class="box-head">
+
+
             Boletín de Calificaciones — {{ centro.nombre_escuela }} ({{ ano_seleccionado.nombre if ano_seleccionado else "" }})
+
+
           </div>
+
+
           <div class="box-body">
+
+
             {% for b in boletines %}
+
+
             <div class="boletin-card">
+
+
               <div class="boletin-escuela">
+
+
                 {{ centro.nombre_escuela }}
+
+
                 {% if centro.codigo_dea %} — Código DEA: {{ centro.codigo_dea }}{% endif %}
+
+
                 {% if centro.ubicacion %} ({{ centro.ubicacion }}){% endif %}
+
+
               </div>
+
+
               <div class="boletin-grid">
+
+
                 <div><strong>Alumno:</strong> {{ b.estudiante.nombres }} {{ b.estudiante.apellidos }}</div>
+
+
                 <div><strong>Cédula Escolar:</strong> {{ b.estudiante.cedula_escolar }}</div>
+
+
                 <div><strong>Representante Legal:</strong> {{ b.estudiante.representante_legal or "-" }}</div>
+
+
                 <div><strong>Curso:</strong> {{ b.matricula.grado_ano }} "{{ b.matricula.seccion }}" ({{ b.ano }})</div>
+
+
                 <div><strong>Promedio General:</strong> {{ b.promedio_general if b.promedio_general is not none else "Pendiente" }}</div>
+
+
                 <div><strong>Condición del Curso:</strong> {{ b.condicion }}</div>
+
+
               </div>
+
+
               <div class="tbl-wrap">
+
+
                 <table class="alboran-tbl">
+
+
                   <thead>
+
+
                     <tr>
+
+
                       <th>Asignatura</th>
+
+
                       <th>Calificaciones Cargadas</th>
+
+
                       <th class="num-cell">Definitiva</th>
+
+
                       <th class="num-cell">Situación</th>
+
+
                     </tr>
+
+
                   </thead>
+
+
                   <tbody>
+
+
                     {% for mat in b.materias %}
+
+
                     <tr>
+
+
                       <td>{{ mat.asignatura }}</td>
+
+
                       <td>{{ mat.notas | join("  |  ") }}</td>
+
+
                       <td class="num-cell {{ 'ok-txt' if mat.definitiva >= 10 else 'bad-txt' }}">{{ mat.definitiva }}</td>
+
+
                       <td class="num-cell">{{ mat.estado }}</td>
+
+
                     </tr>
+
+
                     {% else %}
+
+
                     <tr><td colspan="4">Sin asignaturas calificadas aún.</td></tr>
+
+
                     {% endfor %}
+
+
                   </tbody>
+
+
                 </table>
+
+
               </div>
+
+
             </div>
+
+
             {% else %}
+
+
             <p>No hay boletines disponibles para este año escolar.</p>
+
+
             {% endfor %}
+
+
           </div>
+
+
         </div>
+
+
       </section>
 
+
+
+
+
       <!-- HORARIO SEMANAL -->
+
+
       <section id="view-horario" class="section-view">
+
+
         <div class="box no-print">
+
+
           <div class="box-head">Filtrar Horario por Grado / Año y Sección</div>
+
+
           <div class="box-body">
+
+
             <form method="get" action="/panel" class="grid-inputs">
+
+
               {% if ano_seleccionado %}
+
+
               <input type="hidden" name="ano_id" value="{{ ano_seleccionado.id }}" />
+
+
               {% endif %}
+
+
               <div>
+
+
                 <label class="lbl">Grado / Año</label>
+
+
                 <select name="filtro_grado_horario">
+
+
                   <option value="">Todos los años (1er a 4to)</option>
+
+
                   <option value="1er Año" {% if filtro_grado_horario == "1er Año" %}selected{% endif %}>1er Año (A - C)</option>
+
+
                   <option value="2do Año" {% if filtro_grado_horario == "2do Año" %}selected{% endif %}>2do Año (A - D)</option>
+
+
                   <option value="3er Año" {% if filtro_grado_horario == "3er Año" %}selected{% endif %}>3er Año (A - D)</option>
+
+
                   <option value="4to Año" {% if filtro_grado_horario == "4to Año" %}selected{% endif %}>4to Año (A - C)</option>
+
+
                 </select>
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Sección</label>
+
+
                 <select name="filtro_seccion_horario">
+
+
                   <option value="">Todas las secciones</option>
+
+
                   <option value="A" {% if filtro_seccion_horario == "A" %}selected{% endif %}>A</option>
+
+
                   <option value="B" {% if filtro_seccion_horario == "B" %}selected{% endif %}>B</option>
+
+
                   <option value="C" {% if filtro_seccion_horario == "C" %}selected{% endif %}>C</option>
+
+
                   <option value="D" {% if filtro_seccion_horario == "D" %}selected{% endif %}>D</option>
+
+
                 </select>
+
+
               </div>
+
+
               <div style="display:flex; gap:6px;">
+
+
                 <button type="submit" class="btn-save">Filtrar Horario</button>
+
+
                 <a class="btn-cancel" href="/panel?ano_id={{ ano_seleccionado.id if ano_seleccionado else '' }}">Limpiar</a>
+
+
               </div>
+
+
             </form>
+
+
           </div>
+
+
         </div>
+
+
+
+
 
         {% if usuario.rol in ["director", "coordinador"] and ano_seleccionado %}
+
+
         <div class="box no-print">
+
+
           <div class="box-head">Añadir Clase al Horario ({{ ano_seleccionado.nombre }})</div>
+
+
           <div class="box-body">
+
+
             <form method="post" action="/horarios/guardar" class="grid-inputs">
+
+
               <input type="hidden" name="ano_escolar_id" value="{{ ano_seleccionado.id }}" />
+
+
               <div>
+
+
                 <label class="lbl">Grado / Año</label>
+
+
                 <select name="grado_ano" required>
+
+
                   <option value="1er Año">1er Año</option>
+
+
                   <option value="2do Año">2do Año</option>
+
+
                   <option value="3er Año">3er Año</option>
+
+
                   <option value="4to Año">4to Año</option>
+
+
                 </select>
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Sección</label>
+
+
                 <select name="seccion" required>
+
+
                   <option value="A">A</option>
+
+
                   <option value="B">B</option>
+
+
                   <option value="C">C</option>
+
+
                   <option value="D">D</option>
+
+
                 </select>
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Día</label>
+
+
                 <select name="dia_semana" required>
+
+
                   {% for d in dias_semana %}
+
+
                   <option value="{{ d }}">{{ d }}</option>
+
+
                   {% endfor %}
+
+
                 </select>
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Bloque Horario (12:15 PM - 05:20 PM)</label>
+
+
                 <select name="bloque_hora" required>
+
+
                   <option value="12:15 PM - 01:35 PM">12:15 PM - 01:35 PM</option>
+
+
                   <option value="01:35 PM - 02:50 PM">01:35 PM - 02:50 PM</option>
+
+
                   <option value="02:50 PM - 04:10 PM">02:50 PM - 04:10 PM</option>
+
+
                   <option value="04:10 PM - 05:20 PM">04:10 PM - 05:20 PM</option>
+
+
                 </select>
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Asignatura</label>
+
+
                 <select name="asignatura" required>
+
+
                   {% for mat in asignaturas_base %}
+
+
                   <option value="{{ mat }}">{{ mat }}</option>
+
+
                   {% endfor %}
+
+
                 </select>
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Aula (opcional)</label>
+
+
                 <input type="text" name="aula" placeholder="Ej. Aula 4" />
+
+
               </div>
+
+
               <div>
+
+
                 <button type="submit" class="btn-save" style="width:100%;">Añadir al Horario</button>
+
+
               </div>
+
+
             </form>
+
+
           </div>
+
+
         </div>
+
+
         {% endif %}
 
+
+
+
+
         <div class="box">
+
+
           <div class="box-head">
+
+
             Horario Semanal
+
+
             {% if filtro_grado_horario or filtro_seccion_horario %}
+
+
               — Filtrado por: {{ filtro_grado_horario or "Todos los grados" }} / {{ filtro_seccion_horario or "Todas las secciones" }}
+
+
             {% endif %}
+
+
           </div>
+
+
           <div class="box-body tbl-wrap">
+
+
             <table class="alboran-tbl">
+
+
               <thead>
+
+
                 <tr>
+
+
                   <th>Hora</th>
+
+
                   {% for d in dias_semana %}
+
+
                   <th>{{ d }}</th>
+
+
                   {% endfor %}
+
+
                 </tr>
+
+
               </thead>
+
+
               <tbody>
+
+
                 {% for fila in rejilla_horario %}
+
+
                 <tr>
+
+
                   <td><strong>{{ fila.bloque }}</strong></td>
+
+
                   {% for celda in fila.dias %}
+
+
                   <td>
+
+
                     {% if celda %}
+
+
                       <strong>{{ celda.asignatura }}</strong><br/>
+
+
                       <span>{{ celda.grado_ano }} "{{ celda.seccion }}"</span>
+
+
                       {% if celda.aula %}<br/><small>{{ celda.aula }}</small>{% endif %}
+
+
                       {% if usuario.rol in ["director", "coordinador"] %}
+
+
                       <form method="post" action="/horarios/{{ celda.id }}/eliminar" style="margin-top:6px;">
+
+
                         <button type="submit" class="btn-bad" style="padding:2px 6px; font-size:11px;">Eliminar</button>
+
+
                       </form>
+
+
                       {% endif %}
+
+
                     {% else %}
+
+
                       —
+
+
                     {% endif %}
+
+
                   </td>
+
+
                   {% endfor %}
+
+
                 </tr>
+
+
                 {% endfor %}
+
+
               </tbody>
+
+
             </table>
+
+
           </div>
+
+
         </div>
+
+
+
+
 
         <div class="box" style="margin-top:14px;">
+
+
           <div class="box-head">
+
+
             Horarios por Grado / A?o y Secci?n {% if usuario.rol == "docente" %}(Tu Carga Asignada){% endif %}
+
+
           </div>
+
+
           <div class="box-body">
+
+
             {% set hay_cursos = false %}
+
+
             {% for curso in horarios_por_curso %}
+
+
               {% set tiene_clases = false %}
+
+
               {% for fila in curso.rejilla %}
+
+
                 {% for celda in fila.dias %}
+
+
                   {% if celda %}{% set tiene_clases = true %}{% endif %}
+
+
                 {% endfor %}
+
+
               {% endfor %}
+
+
               {% if tiene_clases or filtro_grado_horario or filtro_seccion_horario %}
+
+
                 {% set hay_cursos = true %}
+
+
                 <div style="margin-bottom:18px; border:1px solid #cbd5e1; border-radius:6px; overflow:hidden;">
+
+
                   <div style="background:#f1f5f9; padding:8px 12px; font-weight:600; display:flex; justify-content:space-between; align-items:center;">
+
+
                     <span>{{ curso.titulo }}</span>
+
+
                     <span style="font-size:12px; color:#475569;">{{ curso.grado_ano }} ? Secci?n {{ curso.seccion }}</span>
+
+
                   </div>
+
+
                   <div class="tbl-wrap">
+
+
                     <table class="alboran-tbl">
+
+
                       <thead>
+
+
                         <tr>
+
+
                           <th>Hora</th>
+
+
                           {% for d in dias_semana %}
+
+
                           <th>{{ d }}</th>
+
+
                           {% endfor %}
+
+
                         </tr>
+
+
                       </thead>
+
+
                       <tbody>
+
+
                         {% for fila in curso.rejilla %}
+
+
                         <tr>
+
+
                           <td><strong>{{ fila.bloque }}</strong></td>
+
+
                           {% for celda in fila.dias %}
+
+
                           <td>
+
+
                             {% if celda %}
+
+
                               <strong>{{ celda.asignatura }}</strong><br/>
+
+
                               {% if celda.aula %}<small>{{ celda.aula }}</small><br/>{% endif %}
+
+
                               {% if usuario.rol in ["director", "coordinador"] %}
+
+
                               <form method="post" action="/horarios/{{ celda.id }}/eliminar" style="margin-top:6px;">
+
+
                                 <button type="submit" class="btn-bad" style="padding:2px 6px; font-size:11px;">Eliminar</button>
+
+
                               </form>
+
+
                               {% endif %}
+
+
                             {% else %}
+
+
                               ?
+
+
                             {% endif %}
+
+
                           </td>
+
+
                           {% endfor %}
+
+
                         </tr>
+
+
                         {% endfor %}
+
+
                       </tbody>
+
+
                     </table>
+
+
                   </div>
+
+
                 </div>
+
+
               {% endif %}
+
+
             {% endfor %}
+
+
             {% if not hay_cursos %}
+
+
               <p style="color:#64748b; margin:0;">No hay horarios cargados para este filtro o asignaci?n docente.</p>
+
+
             {% endif %}
+
+
           </div>
+
+
         </div>
+
+
         </section>
 
+
+
+
+
       <!-- FALTAS, JUSTIFICACIONES Y PARTES -->
+
+
       <section id="view-faltas" class="section-view">
+
+
         {% if usuario.rol in ["docente", "coordinador", "director"] %}
+
+
         <div class="box no-print">
+
+
           <div class="box-head">1. Seleccionar Clase y Pasar / Editar Asistencia por Alumno</div>
+
+
           <div class="box-body">
+
+
             <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:flex-end; margin-bottom:14px;">
+
+
               <div>
+
+
                 <label class="lbl">Fecha Actual de Clase</label>
+
+
                 <input type="date" id="fecha-clase-asistencia" class="inp" required />
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Clase (Grado/Año y Sección)</label>
+
+
                 <select id="selector-clase-asistencia" class="inp" onchange="seleccionarClaseAsistencia(this.value)">
+
+
                   <option value="">-- Elige una clase --</option>
+
+
                 </select>
+
+
               </div>
+
+
               <div>
+
+
                 <button type="button" class="btn btn-sm" onclick="marcarTodosClase('Presente')">Todos Presente</button>
+
+
                 <button type="button" class="btn btn-sm" onclick="marcarTodosClase('Inasistente')">Todos Inasistente</button>
+
+
                 <button type="button" class="btn btn-sm" onclick="marcarTodosClase('Retardo')">Todos Retardo</button>
+
+
               </div>
+
+
             </div>
+
+
+
+
 
             <div id="tarjetas-clases-asistencia" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(210px, 1fr)); gap:10px; margin-bottom:16px;"></div>
 
+
+
+
+
             <div class="tbl-wrap">
+
+
               <table class="alboran-tbl" id="tabla-pase-lista-clase">
+
+
                 <thead id="thead-pase-lista-clase">
+
+
                   <tr>
+
+
                     <th>Nombres y Apellidos</th>
+
+
                     <th>Fecha Actual</th>
+
+
                   </tr>
+
+
                 </thead>
+
+
                 <tbody id="tbody-pase-lista-clase">
+
+
                   <tr><td colspan="2">Selecciona una clase arriba para mostrar la lista de alumnos.</td></tr>
+
+
                 </tbody>
+
+
               </table>
+
+
             </div>
+
+
           </div>
+
+
         </div>
+
+
         <div class="box">
+
+
           <div class="box-head">2. Historial de Asistencias, Edición de Estado y Justificaciones</div>
+
+
           <div class="box-body tbl-wrap">
+
+
             <table class="alboran-tbl">
+
+
               <thead>
+
+
                 <tr>
+
+
                   <th>Fecha</th>
+
+
                   <th>Alumno</th>
+
+
                   <th>Clase</th>
+
+
                   <th>Estado / Editar</th>
+
+
                   <th>Justificación</th>
+
+
                   <th>Revisión</th>
+
+
                   <th>Acción</th>
+
+
                 </tr>
+
+
               </thead>
+
+
               <tbody>
+
+
                 {% for a in asistencias %}
+
+
                 {% set est = a.matricula.estudiante if a.matricula else None %}
+
+
                 <tr>
+
+
                   <td>{{ a.fecha }}</td>
+
+
                   <td><strong>{{ est.nombres ~ " " ~ est.apellidos if est else "#" ~ a.matricula_id }}</strong></td>
+
+
                   <td>{{ (a.matricula.grado_ano ~ " " ~ a.matricula.seccion) if a.matricula else "-" }}</td>
+
+
                   <td>
+
+
                     {% if usuario.rol in ["docente", "coordinador", "director"] %}
+
+
                     <form method="post" action="/asistencias/{{ a.id }}/editar" style="display:flex; gap:6px; align-items:center; margin:0;">
+
+
                       <input type="hidden" name="fecha" value="{{ a.fecha }}" />
+
+
                       <select name="estado" class="inp" style="min-width:125px;">
+
+
                         <option value="Presente" {% if a.estado == "Presente" %}selected{% endif %}>Presente</option>
+
+
                         <option value="Inasistente" {% if a.estado == "Inasistente" %}selected{% endif %}>Inasistente</option>
+
+
                         <option value="Retardo" {% if a.estado == "Retardo" %}selected{% endif %}>Retardo</option>
+
+
                       </select>
+
+
                       <button type="submit" class="btn btn-sm">Actualizar</button>
+
+
                     </form>
+
+
                     {% else %}
+
+
                     <strong>{{ a.estado }}</strong>
+
+
                     {% endif %}
+
+
                   </td>
+
+
                   <td>{{ a.motivo_justificacion or "-" }}</td>
+
+
                   <td>
+
+
                     {% if a.estado_justificacion == "Aprobada" %}
+
+
                       <span class="ok-txt">Aprobada</span>
+
+
                     {% elif a.estado_justificacion == "Rechazada" %}
+
+
                       <span class="bad-txt">Rechazada</span>
+
+
                     {% elif a.estado_justificacion == "Pendiente" %}
+
+
                       <span class="warn-txt">Pendiente</span>
+
+
                     {% else %}
+
+
                       <span>{{ a.estado_justificacion or "Sin justificar" }}</span>
+
+
                     {% endif %}
+
+
                   </td>
+
+
                   <td>
+
+
                     {% if usuario.rol == "representante" and a.estado in ("Inasistente", "Retardo") %}
+
+
                       <form method="post" action="/asistencias/{{ a.id }}/justificar" style="display:flex; gap:6px; align-items:center; margin:0;">
+
+
                         <input type="text" name="motivo_justificacion" value="{{ a.motivo_justificacion or '' }}" placeholder="Motivo (cita médica, reposo...)" required style="min-width:170px;" />
+
+
                         <button type="submit" class="btn-save" style="padding:5px 8px; font-size:11.5px;">Justificar</button>
+
+
                       </form>
+
+
                     {% elif usuario.rol in ["docente", "coordinador", "director"] and a.estado in ("Inasistente", "Retardo") %}
+
+
                       <div style="display:flex; gap:4px; align-items:center;">
+
+
                         <form method="post" action="/asistencias/{{ a.id }}/revisar-justificacion" style="margin:0;">
+
+
                           <input type="hidden" name="decision" value="Aprobada" />
+
+
                           <button type="submit" class="btn-ok">Aprobar</button>
+
+
                         </form>
+
+
                         <form method="post" action="/asistencias/{{ a.id }}/revisar-justificacion" style="margin:0;">
+
+
                           <input type="hidden" name="decision" value="Rechazada" />
+
+
                           <button type="submit" class="btn-bad">Rechazar</button>
+
+
                         </form>
+
+
                       </div>
+
+
                     {% else %}
+
+
                       —
+
+
                     {% endif %}
+
+
                   </td>
+
+
                 </tr>
+
+
                 {% else %}
+
+
                 <tr><td colspan="7">Sin registros de asistencia.</td></tr>
+
+
                 {% endfor %}
+
+
               </tbody>
+
+
             </table>
+
+
           </div>
+
+
         </div>
+
+
+
+
 
         <script>
+
+
           (function() {
+
+
             const fechaInput = document.getElementById("fecha-clase-asistencia");
+
+
             if (fechaInput && !fechaInput.value) {
+
+
               const hoy = new Date();
+
+
               const yyyy = hoy.getFullYear();
+
+
               const mm = String(hoy.getMonth() + 1).padStart(2, "0");
+
+
               const dd = String(hoy.getDate()).padStart(2, "0");
+
+
               fechaInput.value = `${yyyy}-${mm}-${dd}`;
+
+
             }
 
+
+
+
+
             const alumnosClase = [
+
+
               {% for m in matriculas_cuaderno %}
+
+
               {
+
+
                 matriculaId: {{ m.id }},
+
+
                 cedulaEscolar: {{ (m.estudiante.cedula_escolar or "") | tojson }},
+
+
                 nombreCompleto: {{ ((m.estudiante.nombres or "") ~ " " ~ (m.estudiante.apellidos or "")) | trim | tojson }},
+
+
                 gradoAno: {{ (m.grado_ano or "") | trim | tojson }},
+
+
                 seccion: {{ (m.seccion or "") | trim | tojson }}
+
+
               }{% if not loop.last %},{% endif %}
+
+
               {% endfor %}
+
+
             ];
+
+
+
+
 
             const rolUsuario = {{ (usuario.rol or "") | tojson }};
+
+
             const idUsuarioActual = {{ usuario.id }};
 
+
+
+
+
             const asignacionesTodas = [
+
+
               {% for a in (asignaciones_ano if asignaciones_ano else (asignaciones_docente or [])) %}
+
+
               {
+
+
                 docenteId: {{ a.docente_id if a.docente_id is not none else "null" }},
+
+
                 gradoAno: {{ (a.grado_ano or "") | trim | tojson }},
+
+
                 seccion: {{ (a.seccion or "") | trim | tojson }},
+
+
                 asignatura: {{ (a.asignatura or "") | trim | tojson }}
+
+
               }{% if not loop.last %},{% endif %}
+
+
               {% endfor %}
+
+
             ];
 
+
+
+
+
             const asignacionesClase = rolUsuario === "docente"
+
+
               ? asignacionesTodas.filter(a => Number(a.docenteId) === Number(idUsuarioActual))
+
+
               : asignacionesTodas;
 
+
+
+
+
             const clasesPermitidas = new Set(
+
+
               asignacionesClase.map(a => `${a.gradoAno} | ${a.seccion}`)
+
+
             );
+
+
+
+
 
             const clasesMap = new Map();
 
+
+
+
+
             if (rolUsuario === "docente") {
+
+
               for (const asig of asignacionesClase) {
+
+
                 const clave = `${asig.gradoAno} | ${asig.seccion}`;
+
+
                 if (!clasesMap.has(clave)) {
+
+
                   clasesMap.set(clave, {
+
+
                     clave,
+
+
                     gradoAno: asig.gradoAno,
+
+
                     seccion: asig.seccion,
+
+
                     materias: [],
+
+
                     alumnos: []
+
+
                   });
+
+
                 }
+
+
                 if (asig.asignatura && !clasesMap.get(clave).materias.includes(asig.asignatura)) {
+
+
                   clasesMap.get(clave).materias.push(asig.asignatura);
+
+
                 }
+
+
               }
+
+
               for (const al of alumnosClase) {
+
+
                 const clave = `${al.gradoAno} | ${al.seccion}`;
+
+
                 if (clasesPermitidas.has(clave) && clasesMap.has(clave)) {
+
+
                   clasesMap.get(clave).alumnos.push(al);
+
+
                 }
+
+
               }
+
+
             } else {
+
+
               for (const al of alumnosClase) {
+
+
                 const clave = `${al.gradoAno} | ${al.seccion}`;
+
+
                 if (!clasesMap.has(clave)) {
+
+
                   clasesMap.set(clave, {
+
+
                     clave,
+
+
                     gradoAno: al.gradoAno,
+
+
                     seccion: al.seccion,
+
+
                     materias: [],
+
+
                     alumnos: []
+
+
                   });
+
+
                 }
+
+
                 clasesMap.get(clave).alumnos.push(al);
+
+
               }
+
+
               for (const asig of asignacionesClase) {
+
+
                 const clave = `${asig.gradoAno} | ${asig.seccion}`;
+
+
                 if (clasesMap.has(clave) && asig.asignatura) {
+
+
                   const entry = clasesMap.get(clave);
+
+
                   if (!entry.materias.includes(asig.asignatura)) {
+
+
                     entry.materias.push(asig.asignatura);
+
+
                   }
+
+
                 }
+
+
               }
+
+
             }
 
+
+
+
+
             const selector = document.getElementById("selector-clase-asistencia");
+
+
             const tarjetas = document.getElementById("tarjetas-clases-asistencia");
+
+
             const thead = document.getElementById("thead-pase-lista-clase");
+
+
             const tbody = document.getElementById("tbody-pase-lista-clase");
+
+
+
+
 
             if (!selector || !tarjetas || !thead || !tbody) return;
 
+
+
+
+
             for (const [clave, info] of clasesMap.entries()) {
+
+
               const opt = document.createElement("option");
+
+
               opt.value = clave;
+
+
               const matTxt = info.materias.length ? ` (${info.materias.join(", ")})` : "";
+
+
               opt.textContent = `${info.gradoAno} - ${info.seccion}${matTxt} [${info.alumnos.length} alumnos]`;
+
+
               selector.appendChild(opt);
 
+
+
+
+
               const card = document.createElement("button");
+
+
               card.type = "button";
+
+
               card.className = "btn";
+
+
               card.style.cssText = "text-align:left; padding:10px; display:block; width:100%;";
+
+
               card.innerHTML = `<strong>${info.gradoAno} — Sec. ${info.seccion}</strong><br><small>${info.materias.length ? info.materias.join(", ") : "Clase general"} · ${info.alumnos.length} alumnos</small>`;
+
+
               card.onclick = () => {
+
+
                 selector.value = clave;
+
+
                 window.seleccionarClaseAsistencia(clave);
+
+
               };
+
+
               tarjetas.appendChild(card);
+
+
             }
+
+
+
+
 
             function renderCeldaEstado(matriculaId, fechaStr, registroExistente) {
+
+
               if (registroExistente) {
+
+
                 const estActual = registroExistente.estado || "Presente";
+
+
                 return `
+
+
                   <form method="post" action="/asistencias/${registroExistente.id}/editar" style="display:flex; gap:6px; align-items:center; margin:0;">
+
+
                     <input type="hidden" name="fecha" value="${fechaStr}" />
+
+
                     <select name="estado" class="select-estado-fila inp" style="min-width:125px;">
+
+
                       <option value="Presente" ${estActual === "Presente" ? "selected" : ""}>Presente</option>
+
+
                       <option value="Inasistente" ${estActual === "Inasistente" ? "selected" : ""}>Inasistente</option>
+
+
                       <option value="Retardo" ${estActual === "Retardo" ? "selected" : ""}>Retardo</option>
+
+
                     </select>
+
+
                     <button type="submit" class="btn btn-sm">Guardar</button>
+
+
                   </form>
+
+
                 `;
+
+
               }
+
+
               return `
+
+
                 <form method="post" action="/asistencias/registrar" style="display:flex; gap:6px; align-items:center; margin:0;">
+
+
                   <input type="hidden" name="matricula_id" value="${matriculaId}" />
+
+
                   <input type="hidden" name="fecha" class="campo-fecha-fila" value="${fechaStr}" />
+
+
                   <select name="estado" class="select-estado-fila inp" style="min-width:125px;">
+
+
                     <option value="Presente" selected>Presente</option>
+
+
                     <option value="Inasistente">Inasistente</option>
+
+
                     <option value="Retardo">Retardo</option>
+
+
                   </select>
+
+
                   <button type="submit" class="btn-save" style="padding:5px 10px; font-size:12px;">Guardar</button>
+
+
                 </form>
+
+
               `;
+
+
             }
+
+
+
+
 
             window.seleccionarClaseAsistencia = function(clave) {
+
+
               if (!clave || !clasesMap.has(clave)) {
+
+
                 thead.innerHTML = '<tr><th>Nombres y Apellidos</th><th>Fecha Actual</th></tr>';
+
+
                 tbody.innerHTML = '<tr><td colspan="2">Selecciona una clase arriba para mostrar la lista de alumnos.</td></tr>';
+
+
                 return;
+
+
               }
+
+
+
+
 
               const info = clasesMap.get(clave);
+
+
               const fechaActual = (fechaInput && fechaInput.value) ? fechaInput.value : "";
+
+
               const idsAlumnos = new Set(info.alumnos.map(a => a.matriculaId));
 
+
+
+
+
               // Fechas registradas de esta clase distintas de la fecha actual
+
+
               const fechasSet = new Set();
+
+
               const mapaAsist = new Map();
+
+
               for (const reg of asistenciasPrevias) {
+
+
                 if (idsAlumnos.has(reg.matriculaId)) {
+
+
                   mapaAsist.set(`${reg.matriculaId}__${reg.fecha}`, reg);
+
+
                   if (reg.fecha && reg.fecha !== fechaActual) {
+
+
                     fechasSet.add(reg.fecha);
+
+
                   }
+
+
                 }
+
+
               }
+
+
               const fechasExtra = Array.from(fechasSet).sort().reverse();
 
+
+
+
+
               let thHtml = '<tr><th>Nombres y Apellidos</th>';
+
+
               thHtml += `<th>Fecha Actual (${fechaActual || "sin fecha"})</th>`;
+
+
               for (const f of fechasExtra) {
+
+
                 thHtml += `<th>${f}</th>`;
+
+
               }
+
+
               thHtml += '</tr>';
+
+
               thead.innerHTML = thHtml;
 
+
+
+
+
               if (!info.alumnos.length) {
+
+
                 const cols = 2 + fechasExtra.length;
+
+
                 tbody.innerHTML = `<tr><td colspan="${cols}">No hay alumnos matriculados en esta clase.</td></tr>`;
+
+
                 return;
+
+
               }
 
+
+
+
+
               tbody.innerHTML = info.alumnos.map((al) => {
+
+
                 const regActual = mapaAsist.get(`${al.matriculaId}__${fechaActual}`) || null;
+
+
                 let tds = `<td><strong>${al.nombreCompleto}</strong></td>`;
+
+
                 tds += `<td>${renderCeldaEstado(al.matriculaId, fechaActual, regActual)}</td>`;
+
+
                 for (const f of fechasExtra) {
+
+
                   const regF = mapaAsist.get(`${al.matriculaId}__${f}`) || null;
+
+
                   tds += `<td>${renderCeldaEstado(al.matriculaId, f, regF)}</td>`;
+
+
                 }
+
+
                 return `<tr>${tds}</tr>`;
+
+
               }).join("");
+
+
             };
+
+
+
+
 
             window.marcarTodosClase = function(estadoDeseado) {
+
+
               document.querySelectorAll("#tbody-pase-lista-clase .select-estado-fila").forEach((sel) => {
+
+
                 sel.value = estadoDeseado;
+
+
               });
+
+
             };
 
+
+
+
+
             if (fechaInput) {
+
+
               fechaInput.addEventListener("change", () => {
+
+
                 document.querySelectorAll("#tbody-pase-lista-clase .campo-fecha-fila").forEach((inp) => {
+
+
                   inp.value = fechaInput.value;
+
+
                 });
+
+
                 if (selector && selector.value) {
+
+
                   window.seleccionarClaseAsistencia(selector.value);
+
+
                 }
+
+
               });
+
+
             }
+
+
+
+
 
             if (clasesMap.size > 0) {
+
+
               const primeraClave = clasesMap.keys().next().value;
+
+
               selector.value = primeraClave;
+
+
               window.seleccionarClaseAsistencia(primeraClave);
+
+
             }
+
+
           })();
+
+
         </script>
+
+
       </section>
+
+
+
+
 
       <!-- PARTES DISCIPLINARIOS -->
+
+
       <section id="view-partes" class="section-view">
+
+
         {% if usuario.rol in ["docente", "coordinador", "director"] %}
+
+
         <div class="box no-print">
+
+
           <div class="box-head">Emitir Parte Disciplinario</div>
+
+
           <div class="box-body">
+
+
             <form method="post" action="/partes/registrar" class="grid-inputs">
+
+
               <div>
+
+
                 <label class="lbl">Alumno</label>
+
+
                 <select name="matricula_id" required>
+
+
                   {% for m in matriculas %}
+
+
                   <option value="{{ m.id }}">{{ m.estudiante.nombres }} {{ m.estudiante.apellidos }} ({{ m.grado_ano }} {{ m.seccion }})</option>
+
+
                   {% endfor %}
+
+
                 </select>
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Gravedad</label>
+
+
                 <select name="gravedad">
+
+
                   <option value="Leve">Leve</option>
+
+
                   <option value="Moderada">Moderada</option>
+
+
                   <option value="Grave">Grave</option>
+
+
                 </select>
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Descripción</label>
+
+
                 <input type="text" name="descripcion" required placeholder="Motivo del reporte" />
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Medida Pedagógica</label>
+
+
                 <input type="text" name="medida_pedagogica" required placeholder="Acción formativa acordada" />
+
+
               </div>
+
+
               <div>
+
+
                 <button type="submit" class="btn-save" style="width:100%;">Registrar Parte</button>
+
+
               </div>
+
+
             </form>
+
+
           </div>
+
+
         </div>
+
+
         {% endif %}
 
+
+
+
+
         <div class="box">
+
+
           <div class="box-head">Partes Disciplinarios Emitidos</div>
+
+
           <div class="box-body tbl-wrap">
+
+
             <table class="alboran-tbl">
+
+
               <thead>
+
+
                 <tr>
+
+
                   <th>Gravedad</th>
+
+
                   <th>Alumno / Matrícula</th>
+
+
                   <th>Descripción</th>
+
+
                   <th>Medida Pedagógica</th>
+
+
                 </tr>
+
+
               </thead>
+
+
               <tbody>
+
+
                 {% for p in partes %}
+
+
                 <tr>
+
+
                   <td><strong>{{ p.gravedad }}</strong></td>
+
+
                   <td>#{{ p.matricula_id }}</td>
+
+
                   <td>{{ p.descripcion }}</td>
+
+
                   <td>{{ p.medida_pedagogica }}</td>
+
+
                 </tr>
+
+
                 {% else %}
+
+
                 <tr><td colspan="4">Sin partes disciplinarios registrados.</td></tr>
+
+
                 {% endfor %}
+
+
               </tbody>
+
+
             </table>
+
+
           </div>
+
+
         </div>
+
+
       </section>
+
+
+
+
+
+
 
 
       <!-- GALERIA WEB -->
+
+
       <section id="view-galeria" class="section-view">
+
+
         {% if usuario.rol in ["director", "coordinador", "admin", "administrador", "directivo"] %}
+
+
         <div class="box no-print">
+
+
           <div class="box-head">Subir Fotograf?a a la Galer?a P?blica</div>
+
+
           <div class="box-body">
+
+
             <form id="form-panel-galeria" class="grid-inputs" enctype="multipart/form-data">
+
+
               <div>
+
+
                 <label class="lbl">T?tulo / Actividad *</label>
+
+
                 <input type="text" name="titulo" class="inp" required placeholder="Ej. Jornada deportiva escolar" />
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Categor?a</label>
+
+
                 <input type="text" name="categoria" class="inp" value="Escuela" placeholder="Ej. Escuela, Actos, Deportes" />
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Imagen (JPG, PNG, WEBP) *</label>
+
+
                 <input type="file" name="foto" accept=".jpg,.jpeg,.png,.webp,.gif" required />
+
+
               </div>
+
+
               <div style="align-self:end;">
+
+
                 <button type="submit" class="btn-save">Subir a Galer?a</button>
+
+
               </div>
+
+
             </form>
+
+
             <p id="estado-panel-galeria" style="margin-top:10px; font-size:13px;"></p>
+
+
           </div>
+
+
         </div>
 
+
+
+
+
         <div class="box">
+
+
           <div class="box-head">Fotos Publicadas en la Galer?a</div>
+
+
           <div class="box-body">
+
+
             <div id="lista-panel-galeria" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(210px, 1fr)); gap:14px;">
+
+
               <p>Cargando galer?a...</p>
+
+
             </div>
+
+
           </div>
+
+
         </div>
+
+
+
+
 
         <script>
+
+
           (function() {
+
+
             const formGal = document.getElementById("form-panel-galeria");
+
+
             const msgGal = document.getElementById("estado-panel-galeria");
+
+
             const gridGal = document.getElementById("lista-panel-galeria");
+
+
             if (!formGal || !gridGal) return;
 
+
+
+
+
             async function cargarFotosPanel() {
+
+
               try {
+
+
                 const res = await fetch("/api/public/galeria", { credentials: "same-origin" });
+
+
                 const data = await res.json();
+
+
                 const fotos = data.fotos || [];
+
+
                 if (!fotos.length) {
+
+
                   gridGal.innerHTML = "<p>No hay fotograf?as publicadas a?n.</p>";
+
+
                   return;
+
+
                 }
+
+
                 gridGal.innerHTML = fotos.map(f => `
+
+
                   <div style="border:1px solid #d9e2ec; border-radius:6px; padding:8px; background:#fff;">
+
+
                     <img src="${f.url}" alt="${f.titulo}" style="width:100%; height:135px; object-fit:cover; border-radius:4px; margin-bottom:8px;" />
+
+
                     <div style="font-weight:700; font-size:13px; margin-bottom:6px; word-break:break-word;">${f.titulo}</div>
+
+
                     <button type="button" class="btn-cancel" style="padding:4px 8px; font-size:12px; color:#b42318;" onclick="eliminarFotoGaleriaPanel('${f.archivo.replace(/'/g, "\'")}')">Eliminar</button>
+
+
                   </div>
+
+
                 `).join("");
+
+
               } catch (e) {
+
+
                 gridGal.innerHTML = "<p>No se pudo cargar la galer?a.</p>";
+
+
               }
+
+
             }
 
+
+
+
+
             window.eliminarFotoGaleriaPanel = async function(nombreArchivo) {
+
+
               if (!confirm("?Eliminar esta fotograf?a de la galer?a?")) return;
+
+
               const res = await fetch("/api/panel/galeria/" + encodeURIComponent(nombreArchivo), {
+
+
                 method: "DELETE",
+
+
                 credentials: "same-origin"
+
+
               });
+
+
               if (res.ok) {
+
+
                 if (msgGal) msgGal.textContent = "Fotograf?a eliminada.";
+
+
                 cargarFotosPanel();
+
+
               } else {
+
+
                 if (msgGal) msgGal.textContent = "No se pudo eliminar la fotograf?a.";
+
+
               }
+
+
             };
 
+
+
+
+
             formGal.addEventListener("submit", async function(ev) {
+
+
               ev.preventDefault();
+
+
               if (msgGal) msgGal.textContent = "Subiendo fotograf?a...";
+
+
               const fd = new FormData(formGal);
+
+
               const res = await fetch("/api/public/galeria", {
+
+
                 method: "POST",
+
+
                 body: fd,
+
+
                 credentials: "same-origin"
+
+
               });
+
+
               const data = await res.json().catch(() => ({}));
+
+
               if (res.ok) {
+
+
                 formGal.reset();
+
+
                 if (msgGal) msgGal.textContent = data.mensaje || "Imagen subida correctamente.";
+
+
                 cargarFotosPanel();
+
+
               } else {
+
+
                 if (msgGal) msgGal.textContent = data.detail || "Error al subir la imagen.";
+
+
               }
+
+
             });
 
+
+
+
+
             cargarFotosPanel();
+
+
           })();
+
+
         </script>
+
+
         {% endif %}
+
+
       </section>
+
+
+
+
 
       <!-- AVISOS DEL CENTRO -->
+
+
       <section id="view-avisos" class="section-view">
+
+
         {% if usuario.rol in ["director", "coordinador"] %}
+
+
         <div class="box no-print">
+
+
           <div class="box-head">Publicar Aviso o Circular — {{ centro.nombre_escuela }}</div>
+
+
           <div class="box-body">
+
+
             <form method="post" action="/avisos/crear" class="grid-inputs">
+
+
               {% if ano_seleccionado %}
+
+
               <input type="hidden" name="ano_escolar_id" value="{{ ano_seleccionado.id }}" />
+
+
               {% endif %}
+
+
               <div>
+
+
                 <label class="lbl">Título del Aviso *</label>
+
+
                 <input type="text" name="titulo" placeholder="Ej. Reunión de representantes o entrega de boletines" required />
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Dirigido a</label>
+
+
                 <select name="dirigido_a">
+
+
                   <option value="Todos">Todos</option>
+
+
                   <option value="Representantes">Representantes</option>
+
+
                   <option value="Docentes">Docentes</option>
+
+
                 </select>
+
+
               </div>
+
+
               <div style="grid-column: 1 / -1;">
+
+
                 <label class="lbl">Mensaje / Circular *</label>
+
+
                 <textarea name="mensaje" placeholder="Escriba aquí la información para las familias o el personal..." required></textarea>
+
+
               </div>
+
+
               <div>
+
+
                 <button type="submit" class="btn-save">Publicar Aviso</button>
+
+
               </div>
+
+
             </form>
+
+
           </div>
+
+
         </div>
+
+
         {% endif %}
 
+
+
+
+
         <div class="box">
+
+
           <div class="box-head">Tablón de Avisos — {{ centro.nombre_escuela }}</div>
+
+
           <div class="box-body">
+
+
             {% for av in avisos %}
+
+
             <div class="aviso-card">
+
+
               <div style="font-weight:700; color:#0f3d68; font-size:14px; margin-bottom:4px;">{{ av.titulo }}</div>
+
+
               <div class="aviso-meta">
+
+
                 Dirigido a: <strong>{{ av.dirigido_a }}</strong> | Publicado por: {{ av.autor.nombre_completo if av.autor else "Dirección" }}
+
+
               </div>
+
+
               <div>{{ av.mensaje }}</div>
+
+
             </div>
+
+
             {% else %}
+
+
             <p>No hay avisos publicados actualmente.</p>
+
+
             {% endfor %}
+
+
           </div>
+
+
         </div>
+
+
       </section>
+
+
+
+
 
       <!-- ASIGNACIÓN DE DOCENTES A MATERIAS Y SECCIONES -->
+
+
       {% if usuario.rol in ["director", "coordinador"] and ano_seleccionado %}
+
+
       {% endif %}
+
+
       <section id="view-asignaciones" class="section-view">
+
+
         <div class="box">
+
+
           <div class="box-head">Asignar Materia, Grado y Sección a Docente ({{ ano_seleccionado.nombre }})</div>
+
+
           <div class="box-body">
+
+
             <form method="post" action="/docentes/asignar" class="grid-inputs">
+
+
               <input type="hidden" name="ano_escolar_id" value="{{ ano_seleccionado.id }}" />
+
+
               <div>
+
+
                 <label class="lbl">Docente *</label>
+
+
                 <select name="docente_id" required>
+
+
                   {% for doc in docentes %}
+
+
                   <option value="{{ doc.id }}">{{ doc.nombre_completo }} ({{ doc.cedula }})</option>
+
+
                   {% else %}
+
+
                   <option value="" disabled>No hay docentes creados aún</option>
+
+
                   {% endfor %}
+
+
                 </select>
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Asignatura *</label>
+
+
                 <select name="asignatura" required>
+
+
                   {% for mat in asignaturas_base %}
+
+
                   <option value="{{ mat }}">{{ mat }}</option>
+
+
                   {% endfor %}
+
+
                 </select>
+
+
               </div>
+
+
               <div style="grid-column: span 2;">
+
+
                 <label class="lbl">Grados / Años (puedes marcar uno o varios juntos) *</label>
+
+
                 <div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px;">
+
+
                   <button type="button" class="btn btn-sm" onclick="seleccionarGradosCarga(['1er Año', '2do Año'])">1er + 2do Año</button>
+
+
                   <button type="button" class="btn btn-sm" onclick="seleccionarGradosCarga(['3er Año', '4to Año'])">3er + 4to Año</button>
+
+
                   <button type="button" class="btn btn-sm" onclick="seleccionarGradosCarga(['5to Año'])">5to Año</button>
+
+
                   <button type="button" class="btn btn-sm" onclick="seleccionarGradosCarga('TODOS')">Todos</button>
+
+
                   <button type="button" class="btn btn-sm" onclick="seleccionarGradosCarga([])">Limpiar</button>
+
+
                 </div>
+
+
                 <div id="lista-checks-grados" style="display:flex; flex-wrap:wrap; gap:10px; padding:8px; border:1px solid #cbd5e1; border-radius:6px; background:#f8fafc;">
+
+
                   {% set grados_comunes = ["1er Año", "2do Año", "3er Año", "4to Año", "5to Año"] %}
+
+
                   {% for m in matriculas %}
+
+
                     {% if m.grado_ano and m.grado_ano not in grados_comunes %}
+
+
                       {% set _ = grados_comunes.append(m.grado_ano) %}
+
+
                     {% endif %}
+
+
                   {% endfor %}
+
+
                   {% for g in grados_comunes %}
+
+
                   <label style="display:inline-flex; align-items:center; gap:5px; font-size:13px; cursor:pointer;">
+
+
                     <input type="checkbox" name="grado_ano" value="{{ g }}" class="chk-grado-carga" />
+
+
                     <span>{{ g }}</span>
+
+
                   </label>
+
+
                   {% endfor %}
+
+
                 </div>
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Sección *</label>
+
+
                 <select name="seccion" class="inp">
+
+
                   <option value="TODAS" selected>Todas las secciones del año</option>
+
+
                   <option value="A">Sección A</option>
+
+
                   <option value="B">Sección B</option>
+
+
                   <option value="C">Sección C</option>
+
+
                   <option value="D">Sección D</option>
+
+
                 </select>
+
+
               </div>
+
+
               <div>
+
+
                 <button type="submit" class="btn-save" style="width:100%;">Asignar Carga</button>
+
+
               </div>
+
+
             </form>
+
+
             <script>
+
+
               (function() {
+
+
                 window.seleccionarGradosCarga = function(objetivo) {
+
+
                   const checks = Array.from(document.querySelectorAll("#lista-checks-grados .chk-grado-carga"));
+
+
                   if (!checks.length) return;
+
+
                   if (objetivo === "TODOS") {
+
+
                     checks.forEach(c => { c.checked = true; });
+
+
                     return;
+
+
                   }
+
+
                   const setObj = new Set(Array.isArray(objetivo) ? objetivo : []);
+
+
                   checks.forEach(c => { c.checked = setObj.has(c.value); });
+
+
                 };
 
+
+
+
+
                 const formCarga = document.querySelector('form[action="/docentes/asignar"]');
+
+
                 if (formCarga) {
+
+
                   formCarga.addEventListener("submit", function(ev) {
+
+
                     const marcados = formCarga.querySelectorAll('input[name="grado_ano"]:checked');
+
+
                     if (!marcados.length) {
+
+
                       ev.preventDefault();
+
+
                       alert("Selecciona al menos un grado o año antes de asignar la carga.");
+
+
                     }
+
+
                   });
+
+
                 }
+
+
               })();
+
+
             </script>
+
+
           </div>
+
+
         </div>
 
+
+
+
+
         <div class="box">
+
+
           <div class="box-head">Carga Académica Asignada en {{ ano_seleccionado.nombre }}</div>
+
+
           <div class="box-body tbl-wrap">
+
+
             <table class="alboran-tbl">
+
+
               <thead>
+
+
                 <tr>
+
+
                   <th>Docente</th>
+
+
                   <th>Asignatura</th>
+
+
                   <th>Grado / Año</th>
+
+
                   <th>Sección</th>
+
+
                   <th>Acción</th>
+
+
                 </tr>
+
+
               </thead>
+
+
               <tbody>
+
+
                 {% for asig in asignaciones_ano %}
+
+
                 <tr>
+
+
                   <td><strong>{{ asig.docente.nombre_completo if asig.docente else "-" }}</strong></td>
+
+
                   <td>{{ asig.asignatura }}</td>
+
+
                   <td>{{ asig.grado_ano }}</td>
+
+
                   <td>"{{ asig.seccion }}"</td>
+
+
                   <td>
+
+
                     <form method="post" action="/docentes/asignaciones/{{ asig.id }}/eliminar" style="margin:0;">
+
+
                       <button type="submit" class="btn-bad">Quitar</button>
+
+
                     </form>
+
+
                   </td>
+
+
                 </tr>
+
+
                 {% else %}
+
+
                 <tr><td colspan="5">No hay asignaciones docentes registradas para este año escolar.</td></tr>
+
+
                 {% endfor %}
+
+
               </tbody>
+
+
             </table>
+
+
           </div>
+
+
         </div>
+
+
       <div id="box-editar-usuario" class="box" style="display:none; margin-top:14px;">
+
+
         <div class="box-head">Editar Usuario Seleccionado</div>
+
+
         <div class="box-body">
+
+
           <form id="form-editar-usuario" method="post" action="" class="grid-inputs">
+
+
             <div>
+
+
               <label class="lbl">Cédula</label>
+
+
               <input id="edit-usr-cedula" name="cedula" class="inp" required />
+
+
             </div>
+
+
             <div>
+
+
               <label class="lbl">Nombre Completo</label>
+
+
               <input id="edit-usr-nombre" name="nombre_completo" class="inp" required />
+
+
             </div>
+
+
             <div>
+
+
               <label class="lbl">Rol</label>
+
+
               <select id="edit-usr-rol" name="rol" class="inp">
+
+
                 <option value="director">director</option>
+
+
                 <option value="coordinador">coordinador</option>
+
+
                 <option value="docente">docente</option>
+
+
                 <option value="representante">representante</option>
+
+
               </select>
+
+
             </div>
+
+
             <div>
+
+
               <label class="lbl">Estado</label>
+
+
               <select id="edit-usr-activo" name="activo" class="inp">
+
+
                 <option value="true">Activo</option>
+
+
                 <option value="false">Inactivo</option>
+
+
               </select>
+
+
             </div>
+
+
             <div>
+
+
               <label class="lbl">Nueva Contraseña (opcional)</label>
+
+
               <input id="edit-usr-password" name="password" type="password" class="inp" placeholder="Dejar vacío para mantener" />
+
+
             </div>
+
+
             <div style="display:flex; gap:8px; align-items:flex-end;">
+
+
               <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+
+
               <button type="button" class="btn" onclick="cerrarEditarUsuario()">Cancelar</button>
+
+
             </div>
+
+
           </form>
+
+
         </div>
+
+
       </div>
+
+
       <script>
+
+
         function abrirEditarUsuario(btn) {
+
+
           const box = document.getElementById("box-editar-usuario");
+
+
           const form = document.getElementById("form-editar-usuario");
+
+
           form.action = "/usuarios/" + btn.dataset.id + "/editar";
+
+
           document.getElementById("edit-usr-cedula").value = btn.dataset.cedula;
+
+
           document.getElementById("edit-usr-nombre").value = btn.dataset.nombre;
+
+
           document.getElementById("edit-usr-rol").value = btn.dataset.rol;
+
+
           document.getElementById("edit-usr-activo").value = btn.dataset.activo;
+
+
           document.getElementById("edit-usr-password").value = "";
+
+
           box.style.display = "block";
+
+
           box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+
         }
+
+
         function cerrarEditarUsuario() {
+
+
           document.getElementById("box-editar-usuario").style.display = "none";
+
+
         }
+
+
       </script>
+
+
       </section>
+
+
       {% endif %}
+
+
+
+
 
       <!-- NOMBRE DE LA ESCUELA, USUARIOS Y AÑOS -->
+
+
       {% if usuario.rol == "director" %}
+
+
       <section id="view-centro" class="section-view">
+
+
         <div class="box">
+
+
           <div class="box-head">Datos y Nombre de la Escuela</div>
+
+
           <div class="box-body">
+
+
             <form method="post" action="/centro/guardar" class="grid-inputs">
+
+
               <div style="grid-column: span 2;">
+
+
                 <label class="lbl">Nombre de la Escuela *</label>
+
+
                 <input type="text" name="nombre_escuela" value="{{ centro.nombre_escuela }}" required />
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Código DEA / Plantel</label>
+
+
                 <input type="text" name="codigo_dea" value="{{ centro.codigo_dea or '' }}" placeholder="Opcional" />
+
+
               </div>
+
+
               <div>
+
+
                 <label class="lbl">Ubicación / Localidad</label>
+
+
                 <input type="text" name="ubicacion" value="{{ centro.ubicacion or '' }}" required />
+
+
               </div>
+
+
               <div>
+
+
                 <button type="submit" class="btn-save" style="width:100%;">Guardar Nombre de Escuela</button>
+
+
               </div>
+
+
             </form>
+
+
           </div>
+
+
         </div>
+
+
       </section>
+
+
+
+
 
       <section id="view-usuarios" class="section-view">
-        <div class="box">
-          <div class="box-head">Alta de Usuarios y Claves (Docentes, Coordinadores, Padres)</div>
-          <div class="box-body">
-            <form method="post" action="/usuarios/crear" class="grid-inputs">
-              <div>
-                <label class="lbl">Cédula</label>
-                <input type="text" name="cedula" required />
-              </div>
-              <div>
-                <label class="lbl">Nombre y Apellido</label>
-                <input type="text" name="nombre_completo" required />
-              </div>
-              <div>
-                <label class="lbl">Clave Inicial</label>
-                <input type="password" name="password" required />
-              </div>
-              <div>
-                <label class="lbl">Rol</label>
-                <select name="rol" required>
-                  <option value="docente">Docente</option>
-                  <option value="coordinador">Coordinador</option>
-                  <option value="representante">Representante (Zona Padres)</option>
-                  <option value="director">Director</option>
-                </select>
-              </div>
-              <div>
-                <button type="submit" class="btn-save" style="width:100%;">Crear Usuario</button>
-              </div>
-            </form>
-          </div>
-        </div>
+
 
         <div class="box">
-          <div class="box-head">Usuarios Registrados en el Sistema</div>
-          <div class="box-body tbl-wrap">
-            <table class="alboran-tbl">
-              <thead>
-                <tr>
-                  <th>Cédula</th>
-                  <th>Nombre Completo</th>
-                  <th>Rol</th>
-                  <th>Estado</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for u in usuarios_lista %}
-                <tr>
-                  <td>{{ u.cedula }}</td>
-                  <td>{{ u.nombre_completo }}</td>
-                  <td>{{ u.rol }}</td>
-                  <td>{{ "Activo" if u.activo else "Inactivo" }}</td>
-                  <td>
-                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
-                      <button type="button" class="btn btn-sm"
-                        data-id="{{ u.id }}"
-                        data-cedula="{{ u.cedula }}"
-                        data-nombre="{{ u.nombre_completo }}"
-                        data-rol="{{ u.rol }}"
-                        data-activo="{{ 'true' if u.activo else 'false' }}"
-                        onclick="abrirEditarUsuario(this)">Editar</button>
-                      {% if u.id != usuario.id %}
-                      <form method="post" action="/usuarios/{{ u.id }}/eliminar" onsubmit="return confirm('¿Eliminar al usuario {{ u.nombre_completo }}?');">
-                        <button type="submit" class="btn btn-sm">Eliminar</button>
-                      </form>
-                      {% endif %}
-                    </div>
-                  </td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
+
+
+          <div class="box-head">Alta de Usuarios y Claves (Docentes, Coordinadores, Padres)</div>
+
+
+          <div class="box-body">
+
+
+            <form method="post" action="/usuarios/crear" class="grid-inputs">
+
+
+              <div>
+
+
+                <label class="lbl">Cédula</label>
+
+
+                <input type="text" name="cedula" required />
+
+
+              </div>
+
+
+              <div>
+
+
+                <label class="lbl">Nombre y Apellido</label>
+
+
+                <input type="text" name="nombre_completo" required />
+
+
+              </div>
+
+
+              <div>
+
+
+                <label class="lbl">Clave Inicial</label>
+
+
+                <input type="password" name="password" required />
+
+
+              </div>
+
+
+              <div>
+
+
+                <label class="lbl">Rol</label>
+
+
+                <select name="rol" required>
+
+
+                  <option value="docente">Docente</option>
+
+
+                  <option value="coordinador">Coordinador</option>
+
+
+                  <option value="representante">Representante (Zona Padres)</option>
+
+
+                  <option value="director">Director</option>
+
+
+                </select>
+
+
+              </div>
+
+
+              <div>
+
+
+                <button type="submit" class="btn-save" style="width:100%;">Crear Usuario</button>
+
+
+              </div>
+
+
+            </form>
+
+
           </div>
+
+
         </div>
+
+
+
+
+
+        <div class="box">
+
+
+          <div class="box-head">Usuarios Registrados en el Sistema</div>
+
+
+          <div class="box-body tbl-wrap">
+
+
+            <table class="alboran-tbl">
+
+
+              <thead>
+
+
+                <tr>
+
+
+                  <th>Cédula</th>
+
+
+                  <th>Nombre Completo</th>
+
+
+                  <th>Rol</th>
+
+
+                  <th>Estado</th>
+
+
+                  <th>Acciones</th>
+
+
+                </tr>
+
+
+              </thead>
+
+
+              <tbody>
+
+
+                {% for u in usuarios_lista %}
+
+
+                <tr>
+
+
+                  <td>{{ u.cedula }}</td>
+
+
+                  <td>{{ u.nombre_completo }}</td>
+
+
+                  <td>{{ u.rol }}</td>
+
+
+                  <td>{{ "Activo" if u.activo else "Inactivo" }}</td>
+
+
+                  <td>
+
+
+                    <div style="display:flex; gap:6px; flex-wrap:wrap;">
+
+
+                      <button type="button" class="btn btn-sm"
+
+
+                        data-id="{{ u.id }}"
+
+
+                        data-cedula="{{ u.cedula }}"
+
+
+                        data-nombre="{{ u.nombre_completo }}"
+
+
+                        data-rol="{{ u.rol }}"
+
+
+                        data-activo="{{ 'true' if u.activo else 'false' }}"
+
+
+                        onclick="abrirEditarUsuario(this)">Editar</button>
+
+
+                      {% if u.id != usuario.id %}
+
+
+                      <form method="post" action="/usuarios/{{ u.id }}/eliminar" onsubmit="return confirm('¿Eliminar al usuario {{ u.nombre_completo }}?');">
+
+
+                        <button type="submit" class="btn btn-sm">Eliminar</button>
+
+
+                      </form>
+
+
+                      {% endif %}
+
+
+                    </div>
+
+
+                  </td>
+
+
+                </tr>
+
+
+                {% endfor %}
+
+
+              </tbody>
+
+
+            </table>
+
+
+          </div>
+
+
+        </div>
+
+
       <div id="box-editar-usuario" class="box" style="display:none; margin-top:14px;">
+
+
         <div class="box-head">Editar Usuario Seleccionado</div>
+
+
         <div class="box-body">
+
+
           <form id="form-editar-usuario" method="post" action="" class="grid-inputs">
+
+
             <div>
+
+
               <label class="lbl">Cédula</label>
+
+
               <input id="edit-usr-cedula" name="cedula" class="inp" required />
+
+
             </div>
+
+
             <div>
+
+
               <label class="lbl">Nombre Completo</label>
+
+
               <input id="edit-usr-nombre" name="nombre_completo" class="inp" required />
+
+
             </div>
+
+
             <div>
+
+
               <label class="lbl">Rol</label>
+
+
               <select id="edit-usr-rol" name="rol" class="inp">
+
+
                 <option value="director">director</option>
+
+
                 <option value="coordinador">coordinador</option>
+
+
                 <option value="docente">docente</option>
+
+
                 <option value="representante">representante</option>
+
+
               </select>
+
+
             </div>
+
+
             <div>
+
+
               <label class="lbl">Estado</label>
+
+
               <select id="edit-usr-activo" name="activo" class="inp">
+
+
                 <option value="true">Activo</option>
+
+
                 <option value="false">Inactivo</option>
+
+
               </select>
+
+
             </div>
+
+
             <div>
+
+
               <label class="lbl">Nueva Contraseña (opcional)</label>
+
+
               <input id="edit-usr-password" name="password" type="password" class="inp" placeholder="Dejar vacío para mantener" />
+
+
             </div>
+
+
             <div style="display:flex; gap:8px; align-items:flex-end;">
+
+
               <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+
+
               <button type="button" class="btn" onclick="cerrarEditarUsuario()">Cancelar</button>
+
+
             </div>
+
+
           </form>
+
+
         </div>
+
+
       </div>
+
+
       <script>
+
+
         function abrirEditarUsuario(btn) {
+
+
           const box = document.getElementById("box-editar-usuario");
+
+
           const form = document.getElementById("form-editar-usuario");
+
+
           form.action = "/usuarios/" + btn.dataset.id + "/editar";
+
+
           document.getElementById("edit-usr-cedula").value = btn.dataset.cedula;
+
+
           document.getElementById("edit-usr-nombre").value = btn.dataset.nombre;
+
+
           document.getElementById("edit-usr-rol").value = btn.dataset.rol;
+
+
           document.getElementById("edit-usr-activo").value = btn.dataset.activo;
+
+
           document.getElementById("edit-usr-password").value = "";
+
+
           box.style.display = "block";
+
+
           box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+
         }
+
+
         function cerrarEditarUsuario() {
+
+
           document.getElementById("box-editar-usuario").style.display = "none";
+
+
         }
+
+
       </script>
+
+
       <div id="box-editar-usuario" class="box" style="display:none; margin-top:14px;">
+
+
         <div class="box-head">Editar Usuario Seleccionado</div>
+
+
         <div class="box-body">
+
+
           <form id="form-editar-usuario" method="post" action="" class="grid-inputs">
+
+
             <div>
+
+
               <label class="lbl">Cédula</label>
+
+
               <input id="edit-usr-cedula" name="cedula" class="inp" required />
+
+
             </div>
+
+
             <div>
+
+
               <label class="lbl">Nombre Completo</label>
+
+
               <input id="edit-usr-nombre" name="nombre_completo" class="inp" required />
+
+
             </div>
+
+
             <div>
+
+
               <label class="lbl">Rol</label>
+
+
               <select id="edit-usr-rol" name="rol" class="inp">
+
+
                 <option value="director">director</option>
+
+
                 <option value="coordinador">coordinador</option>
+
+
                 <option value="docente">docente</option>
+
+
                 <option value="representante">representante</option>
+
+
               </select>
+
+
             </div>
+
+
             <div>
+
+
               <label class="lbl">Estado</label>
+
+
               <select id="edit-usr-activo" name="activo" class="inp">
+
+
                 <option value="true">Activo</option>
+
+
                 <option value="false">Inactivo</option>
+
+
               </select>
+
+
             </div>
+
+
             <div>
+
+
               <label class="lbl">Nueva Contraseña (opcional)</label>
+
+
               <input id="edit-usr-password" name="password" type="password" class="inp" placeholder="Dejar vacío para mantener" />
+
+
             </div>
+
+
             <div style="display:flex; gap:8px; align-items:flex-end;">
+
+
               <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+
+
               <button type="button" class="btn" onclick="cerrarEditarUsuario()">Cancelar</button>
+
+
             </div>
+
+
           </form>
+
+
         </div>
+
+
       </div>
+
+
       <script>
+
+
         function abrirEditarUsuario(btn) {
+
+
           const box = document.getElementById("box-editar-usuario");
+
+
           const form = document.getElementById("form-editar-usuario");
+
+
           form.action = "/usuarios/" + btn.dataset.id + "/editar";
+
+
           document.getElementById("edit-usr-cedula").value = btn.dataset.cedula;
+
+
           document.getElementById("edit-usr-nombre").value = btn.dataset.nombre;
+
+
           document.getElementById("edit-usr-rol").value = btn.dataset.rol;
+
+
           document.getElementById("edit-usr-activo").value = btn.dataset.activo;
+
+
           document.getElementById("edit-usr-password").value = "";
+
+
           box.style.display = "block";
+
+
           box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+
         }
+
+
         function cerrarEditarUsuario() {
+
+
           document.getElementById("box-editar-usuario").style.display = "none";
+
+
         }
+
+
       </script>
+
+
       </section>
+
+
+
+
 
       <section id="view-anos" class="section-view">
+
+
         <div class="box">
+
+
           <div class="box-head">Años Escolares y Cierre de Curso</div>
+
+
           <div class="box-body">
+
+
             <form method="post" action="/anos/crear" class="grid-inputs" style="margin-bottom:10px;">
+
+
               <div>
+
+
                 <label class="lbl">Nuevo Año Escolar</label>
+
+
                 <input type="text" name="nombre" placeholder="Ej. 2027-2028" required />
+
+
               </div>
+
+
               <div>
+
+
                 <button type="submit" class="btn-save">Abrir Año Escolar</button>
+
+
               </div>
+
+
             </form>
+
+
             {% if ano_seleccionado and not ano_seleccionado.cerrado %}
+
+
             <form method="post" action="/anos/{{ ano_seleccionado.id }}/cerrar">
+
+
               <button type="submit" class="btn-close-year">Cerrar Curso {{ ano_seleccionado.nombre }} y Guardar Promedios</button>
+
+
             </form>
+
+
             {% endif %}
+
+
           </div>
+
+
         </div>
+
+
       </section>
+
+
       {% endif %}
+
+
     </main>
+
+
   </div>
 
+
+
+
+
   <script>
+
+
     function toggleMenuLateral() {
+
+
       const shell = document.getElementById('shell');
+
+
       if (shell) shell.classList.toggle('menu-collapsed');
+
+
     }
+
+
+
+
 
     function verSeccion(nombre, btn) {
+
+
       document.querySelectorAll('.section-view').forEach(v => v.classList.remove('active'));
+
+
       const target = document.getElementById('view-' + nombre);
+
+
       if (target) target.classList.add('active');
 
+
+
+
+
       document.querySelectorAll('.menu-item').forEach(b => b.classList.remove('active'));
+
+
       if (btn) {
+
+
         btn.classList.add('active');
+
+
       } else {
+
+
         document.querySelectorAll('.menu-item').forEach(b => {
+
+
           const onClickAttr = b.getAttribute('onclick') || '';
+
+
           if (onClickAttr.includes("'" + nombre + "'")) b.classList.add('active');
+
+
         });
+
+
       }
+
+
     }
+
+
+
+
 
     function toggleGrupo(idGrupo, btn) {
+
+
       const grp = document.getElementById(idGrupo);
+
+
       if (!grp) return;
+
+
       grp.classList.toggle('collapsed');
+
+
       const spans = btn.querySelectorAll('span');
+
+
       if (spans.length > 1) {
+
+
         spans[1].textContent = grp.classList.contains('collapsed') ? '▸' : '▾';
+
+
       }
+
+
     }
+
+
+
+
 
     {% if filtro_curso or filtro_materia %}
+
+
     document.addEventListener('DOMContentLoaded', () => verSeccion('evaluacion'));
+
+
     {% elif filtro_grado_horario or filtro_seccion_horario %}
+
+
     document.addEventListener('DOMContentLoaded', () => verSeccion('horario'));
+
+
     {% endif %}
+
+
   </script>
 
+
+
+
+
     <script>
+
+
       document.addEventListener('DOMContentLoaded', function() {
+
+
         const params = new URLSearchParams(window.location.search);
+
+
         if (params.get('vista') === 'asistencia' && typeof verSeccion === 'function') {
+
+
           verSeccion('asistencia');
+
+
         }
+
+
       });
+
+
     </script>
+
+
     
+
+
 <script>
+
+
   (function () {
+
+
     const mapaClases = {
+
+
       "Presente": "estado-presente",
+
+
       "Inasistente": "estado-inasistente",
+
+
       "Retraso": "estado-retraso",
+
+
       "Justificada": "estado-justificada"
+
+
     };
+
+
     const todasClases = Object.values(mapaClases);
 
+
+
+
+
     function aplicarColorSelect(selectEl) {
+
+
       selectEl.classList.remove(...todasClases);
+
+
       const cls = mapaClases[selectEl.value];
+
+
       if (cls) {
+
+
         selectEl.classList.add(cls);
+
+
       }
+
+
       const td = selectEl.closest("td");
+
+
       if (td && td.classList.contains("celda-asistencia")) {
+
+
         td.classList.remove(...todasClases);
+
+
         if (cls) {
+
+
           td.classList.add(cls);
+
+
         }
+
+
       }
+
+
     }
 
+
+
+
+
     document.addEventListener("DOMContentLoaded", function () {
+
+
       const selects = document.querySelectorAll('select[name^="celda_"]');
+
+
       selects.forEach(function (sel) {
+
+
         aplicarColorSelect(sel);
+
+
         sel.addEventListener("change", function () {
+
+
           aplicarColorSelect(sel);
+
+
         });
+
+
       });
+
+
     });
+
+
   })();
+
+
 </script>
+
+
 </body>
+
+
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,4 +1,4 @@
-﻿import sqlite3
+import sqlite3
 from datetime import datetime
 from pathlib import Path
 
@@ -24,4 +24,4 @@ with destino_conn:
 
 destino_conn.close()
 origen_conn.close()
-print(f"Respaldo creado correctamente en: {destino}")
+print(f"Respaldo creado correctamente en: {destino}")
