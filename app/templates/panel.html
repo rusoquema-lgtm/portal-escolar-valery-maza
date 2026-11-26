@@ -421,9 +421,6 @@
         <button class="menu-item" onclick="verSeccion('faltas', this)">Faltas y Justificaciones</button>
         <button class="menu-item" onclick="verSeccion('partes', this)">Partes Disciplinarios</button>
         <button class="menu-item" onclick="verSeccion('avisos', this)">Avisos del Centro</button>
-        {% if usuario.rol in ["director", "coordinador", "admin", "administrador", "directivo"] %}
-        <button class="menu-item" onclick="verSeccion('galeria', this)">Galer?a Web</button>
-        {% endif %}
       </div>
 
       {% if usuario.rol in ["director", "coordinador"] %}
@@ -1855,110 +1852,6 @@
             </table>
           </div>
         </div>
-      </section>
-
-
-      <!-- GALERIA WEB -->
-      <section id="view-galeria" class="section-view">
-        {% if usuario.rol in ["director", "coordinador", "admin", "administrador", "directivo"] %}
-        <div class="box no-print">
-          <div class="box-head">Subir Fotograf?a a la Galer?a P?blica</div>
-          <div class="box-body">
-            <form id="form-panel-galeria" class="grid-inputs" enctype="multipart/form-data">
-              <div>
-                <label class="lbl">T?tulo / Actividad *</label>
-                <input type="text" name="titulo" class="inp" required placeholder="Ej. Jornada deportiva escolar" />
-              </div>
-              <div>
-                <label class="lbl">Categor?a</label>
-                <input type="text" name="categoria" class="inp" value="Escuela" placeholder="Ej. Escuela, Actos, Deportes" />
-              </div>
-              <div>
-                <label class="lbl">Imagen (JPG, PNG, WEBP) *</label>
-                <input type="file" name="foto" accept=".jpg,.jpeg,.png,.webp,.gif" required />
-              </div>
-              <div style="align-self:end;">
-                <button type="submit" class="btn-save">Subir a Galer?a</button>
-              </div>
-            </form>
-            <p id="estado-panel-galeria" style="margin-top:10px; font-size:13px;"></p>
-          </div>
-        </div>
-
-        <div class="box">
-          <div class="box-head">Fotos Publicadas en la Galer?a</div>
-          <div class="box-body">
-            <div id="lista-panel-galeria" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(210px, 1fr)); gap:14px;">
-              <p>Cargando galer?a...</p>
-            </div>
-          </div>
-        </div>
-
-        <script>
-          (function() {
-            const formGal = document.getElementById("form-panel-galeria");
-            const msgGal = document.getElementById("estado-panel-galeria");
-            const gridGal = document.getElementById("lista-panel-galeria");
-            if (!formGal || !gridGal) return;
-
-            async function cargarFotosPanel() {
-              try {
-                const res = await fetch("/api/public/galeria", { credentials: "same-origin" });
-                const data = await res.json();
-                const fotos = data.fotos || [];
-                if (!fotos.length) {
-                  gridGal.innerHTML = "<p>No hay fotograf?as publicadas a?n.</p>";
-                  return;
-                }
-                gridGal.innerHTML = fotos.map(f => `
-                  <div style="border:1px solid #d9e2ec; border-radius:6px; padding:8px; background:#fff;">
-                    <img src="${f.url}" alt="${f.titulo}" style="width:100%; height:135px; object-fit:cover; border-radius:4px; margin-bottom:8px;" />
-                    <div style="font-weight:700; font-size:13px; margin-bottom:6px; word-break:break-word;">${f.titulo}</div>
-                    <button type="button" class="btn-cancel" style="padding:4px 8px; font-size:12px; color:#b42318;" onclick="eliminarFotoGaleriaPanel('${f.archivo.replace(/'/g, "\'")}')">Eliminar</button>
-                  </div>
-                `).join("");
-              } catch (e) {
-                gridGal.innerHTML = "<p>No se pudo cargar la galer?a.</p>";
-              }
-            }
-
-            window.eliminarFotoGaleriaPanel = async function(nombreArchivo) {
-              if (!confirm("?Eliminar esta fotograf?a de la galer?a?")) return;
-              const res = await fetch("/api/panel/galeria/" + encodeURIComponent(nombreArchivo), {
-                method: "DELETE",
-                credentials: "same-origin"
-              });
-              if (res.ok) {
-                if (msgGal) msgGal.textContent = "Fotograf?a eliminada.";
-                cargarFotosPanel();
-              } else {
-                if (msgGal) msgGal.textContent = "No se pudo eliminar la fotograf?a.";
-              }
-            };
-
-            formGal.addEventListener("submit", async function(ev) {
-              ev.preventDefault();
-              if (msgGal) msgGal.textContent = "Subiendo fotograf?a...";
-              const fd = new FormData(formGal);
-              const res = await fetch("/api/public/galeria", {
-                method: "POST",
-                body: fd,
-                credentials: "same-origin"
-              });
-              const data = await res.json().catch(() => ({}));
-              if (res.ok) {
-                formGal.reset();
-                if (msgGal) msgGal.textContent = data.mensaje || "Imagen subida correctamente.";
-                cargarFotosPanel();
-              } else {
-                if (msgGal) msgGal.textContent = data.detail || "Error al subir la imagen.";
-              }
-            });
-
-            cargarFotosPanel();
-          })();
-        </script>
-        {% endif %}
       </section>
 
       <!-- AVISOS DEL CENTRO -->
