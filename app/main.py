@@ -6151,63 +6151,39 @@ def inscribir_y_matricular(
 
 
 
-    db.add(
+    grado_limpio = grado_ano.strip()
+    seccion_limpia = seccion.strip()
+    if not grado_limpio or not seccion_limpia:
+        db.rollback()
+        raise HTTPException(status_code=400, detail="Debes indicar grado/ano y seccion.")
 
-
-
-
-
-
-        MatriculaAnual(
-
-
-
-
-
-
-            estudiante_id=est.id,
-
-
-
-
-
-
-            ano_escolar_id=ano_escolar_id,
-
-
-
-
-
-
-            grado_ano=grado_ano.strip(),
-
-
-
-
-
-
-            seccion=seccion.strip(),
-
-
-
-
-
-
+    try:
+        matricula_existente = (
+            db.query(MatriculaAnual)
+            .filter(
+                MatriculaAnual.estudiante_id == est.id,
+                MatriculaAnual.ano_escolar_id == ano_escolar_id,
+            )
+            .first()
         )
-
-
-
-
-
-
-    )
-
-
-
-
-
-
-    db.commit()
+        if matricula_existente:
+            matricula_existente.grado_ano = grado_limpio
+            matricula_existente.seccion = seccion_limpia
+        else:
+            db.add(
+                MatriculaAnual(
+                    estudiante_id=est.id,
+                    ano_escolar_id=ano_escolar_id,
+                    grado_ano=grado_limpio,
+                    seccion=seccion_limpia,
+                )
+            )
+        db.commit()
+    except HTTPException:
+        raise
+    except Exception as exc:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"No se pudo guardar la matricula: {exc}")
 
 
 
