@@ -171,6 +171,7 @@ class AsignacionDocente(Base):
 
 
     seccion = Column(String(20), nullable=False)
+    es_tutor = Column(Boolean, default=False)
 
 
 

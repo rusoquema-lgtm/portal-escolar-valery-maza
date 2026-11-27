@@ -27898,7 +27898,7 @@
 
 
 
-                {% set est = a.matrícula.estudiante if a.matrícula else None %}
+                {% set est = a.matricula.estudiante if a.matricula else None %}
 
 
 
@@ -27970,7 +27970,7 @@
 
 
 
-                  <td>{{ (a.matrícula.grado_ano ~ " " ~ a.matrícula.seccion) if a.matrícula else "-" }}</td>
+                  <td>{{ (a.matricula.grado_ano ~ " " ~ a.matricula.seccion) if a.matricula else "-" }}</td>
 
 
 
@@ -38212,6 +38212,10 @@
 
 
 
+                <label style="display:flex; align-items:center; gap:8px; margin-bottom:10px; font-weight:600; cursor:pointer;">
+                  <input type="checkbox" name="es_tutor" value="true" />
+                  <span>Tutor de curso (ver materias y faltas de la clase)</span>
+                </label>
                 <button type="submit" class="btn-save" style="width:100%;">Asignar Carga</button>
 
 
@@ -39112,7 +39116,7 @@
 
 
 
-                  <td>"{{ asig.seccion }}"</td>
+                  <td>"{{ asig.seccion }}"{% if asig.es_tutor %} <span class="rol-pill" style="background:#1b6ca8; margin-left:4px;">Tutor</span>{% endif %}</td>
 
 
 

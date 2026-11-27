@@ -3167,110 +3167,45 @@ def panel(
 
 
     asignaciones_docente = None
-
-
-
-
-
-
+    asignaciones_tutoria = []
+    pares_tutor = set()
     if usuario.rol == "docente":
-
-
-
-
-
-
-        asignaciones_docente = [a for a in asignaciones_ano if a.docente_id == usuario.id]
-
-
-
-
-
-
-        if asignaciones_docente:
-
-
-
-
-
-
-            pares_permitidos = {
-
-
-
-
-
-
-                (a.grado_ano.strip().lower(), a.seccion.strip().lower()) for a in asignaciones_docente
-
-
-
-
-
-
-            }
-
-
-
-
-
-
+        asignaciones_propias = [a for a in asignaciones_ano if a.docente_id == usuario.id]
+        pares_tutor = {
+            (a.grado_ano.strip().lower(), a.seccion.strip().lower())
+            for a in asignaciones_propias
+            if getattr(a, "es_tutor", False)
+        }
+        asignaciones_tutoria = [
+            a
+            for a in asignaciones_ano
+            if (a.grado_ano.strip().lower(), a.seccion.strip().lower()) in pares_tutor
+        ]
+        asignaciones_docente = list(asignaciones_propias)
+        for a_tut in asignaciones_tutoria:
+            if all(existing.id != a_tut.id for existing in asignaciones_docente):
+                asignaciones_docente.append(a_tut)
+        pares_permitidos = {
+            (a.grado_ano.strip().lower(), a.seccion.strip().lower()) for a in asignaciones_propias
+        } | pares_tutor
+        if pares_permitidos:
             matriculas_cuaderno = [
-
-
-
-
-
-
                 m
-
-
-
-
-
-
                 for m in matriculas
-
-
-
-
-
-
                 if (m.grado_ano.strip().lower(), m.seccion.strip().lower()) in pares_permitidos
-
-
-
-
-
-
             ]
-
-
-
-
-
-
+            if pares_tutor:
+                ids_previos = {m.id for m in matriculas}
+                for m_tut in matriculas:
+                    if (
+                        m_tut.id not in ids_previos
+                        and (m_tut.grado_ano.strip().lower(), m_tut.seccion.strip().lower()) in pares_tutor
+                    ):
+                        matriculas.append(m_tut)
+                        ids_previos.add(m_tut.id)
         else:
-
-
-
-
-
-
             matriculas_cuaderno = []
-
-
-
-
-
-
     else:
-
-
-
-
-
-
         matriculas_cuaderno = matriculas
 
 
@@ -3846,6 +3781,8 @@ def panel(
 
 
             "asignaciones_docente": asignaciones_docente,
+            "asignaciones_tutoria": asignaciones_tutoria,
+            "pares_tutor": list(pares_tutor),
 
 
 
@@ -4021,6 +3958,7 @@ def asignar_docente_materia(
 
 
     grado_ano: list[str] = Form(...),
+    es_tutor: bool = Form(False),
 
 
 
@@ -4483,6 +4421,7 @@ def asignar_docente_materia(
 
 
                     grado_ano=g_item,
+                    es_tutor=bool(es_tutor),
 
 
 
