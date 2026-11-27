@@ -2764,96 +2764,37 @@ def login(
 
 
 ):
-
-
-
-
-
-
     centro = obtener_o_crear_centro(db)
+    cedula_limpia = cedula.strip().upper()
+    usuario = db.query(Usuario).filter(Usuario.cedula == cedula_limpia).first()
+    if not usuario:
+        usuario = db.query(Usuario).filter(Usuario.cedula == cedula.strip()).first()
 
-
-
-
-
-
-    usuario = db.query(Usuario).filter(Usuario.cedula == cedula.strip()).first()
-
-
-
-
-
-
-    if not usuario or not verify_password(password, usuario.password_hash) or not usuario.activo:
-
-
-
-
-
-
+    if not usuario or not verify_password(password, usuario.password_hash):
         return templates.TemplateResponse(
-
-
-
-
-
-
-            request, "login.html", {"error": "Cédula o contraseña incorrecta", "centro": centro}
-
-
-
-
-
-
+            request, "login.html", {"error": "C?dula o contrase?a incorrecta", "centro": centro}
         )
 
-
-
-
-
+    if not usuario.activo:
+        return templates.TemplateResponse(
+            request, "login.html", {"error": "Tu usuario est? inactivo. Contacta con direcci?n.", "centro": centro}
+        )
 
     token = crear_token({"sub": usuario.cedula, "rol": usuario.rol})
-
-
-
-
-
-
     resp = RedirectResponse(url="/panel", status_code=303)
-
-
-
-
-
-
-    resp.set_cookie(key="access_token", value=token, httponly=True, path="/", samesite="lax")
-
-
-
-
-
-
+    es_https = (
+        request.url.scheme == "https"
+        or request.headers.get("x-forwarded-proto", "").lower() == "https"
+    )
+    resp.set_cookie(
+        key="access_token",
+        value=token,
+        httponly=True,
+        path="/",
+        samesite="lax",
+        secure=es_https,
+    )
     return resp
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @app.get("/logout")
 
 
