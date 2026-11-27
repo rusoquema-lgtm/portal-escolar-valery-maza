@@ -761,6 +761,16 @@ def datos_iniciales():
 
 
 
+        try:
+            from sqlalchemy import inspect, text
+            insp = inspect(engine)
+            if "asignaciones_docentes" in insp.get_table_names():
+                cols = {c["name"] for c in insp.get_columns("asignaciones_docentes")}
+                if "es_tutor" not in cols:
+                    with engine.begin() as conn:
+                        conn.execute(text("ALTER TABLE asignaciones_docentes ADD COLUMN es_tutor BOOLEAN DEFAULT FALSE"))
+        except Exception:
+            pass
         obtener_o_crear_centro(db)
 
 
