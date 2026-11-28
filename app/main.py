@@ -6841,144 +6841,40 @@ def guardar_calificacion(
 
 
 ):
-
-
-
-
-
-
     if nota_20 < 0 or nota_20 > 20:
-
-
-
-
-
-
         raise HTTPException(status_code=400, detail="Nota fuera de rango (0 a 20)")
-
-
-
-
-
-
-    fecha_limpia = (fecha or "").strip() or date.today().isoformat()
-
-
-
-
-
-
+    fecha_txt = (fecha or "").strip()
+    fecha_obj = date.today()
+    if fecha_txt:
+        try:
+            fecha_obj = date.fromisoformat(fecha_txt[:10])
+        except ValueError:
+            fecha_obj = date.today()
     nota_diaria_limpia = (nota_diaria or "").strip() or None
-
-
-
-
-
-
-    nuevo_reg = Calificacion(
-
-
-
-
-
-
-        matricula_id=matricula_id,
-
-
-
-
-
-
-        docente_id=usuario.id,
-
-
-
-
-
-
-        asignatura=asignatura.strip(),
-
-
-
-
-
-
-        lapso=(lapso or "1er Momento").strip(),
-
-
-
-
-
-
-        nota_20=nota_20,
-
-
-
-
-
-
-        fecha=fecha_limpia,
-
-
-
-
-
-
-    )
-
-
-
-
-
-
-    if hasattr(nuevo_reg, "nota_diaria"):
-
-
-
-
-
-
-        nuevo_reg.nota_diaria = nota_diaria_limpia
-
-
-
-
-
-
-    db.add(nuevo_reg)
-
-
-
-
-
-
-    db.commit()
-
-
-
-
-
-
+    try:
+        col_fecha = Calificacion.__table__.columns.get("fecha")
+        es_columna_fecha = (
+            col_fecha is not None
+            and "DATE" in str(col_fecha.type).upper()
+            and "DATETIME" not in str(col_fecha.type).upper()
+        )
+        valor_fecha = fecha_obj if es_columna_fecha else fecha_obj.isoformat()
+        nuevo_reg = Calificacion(
+            matricula_id=matricula_id,
+            docente_id=usuario.id,
+            asignatura=(asignatura or "").strip(),
+            lapso=(lapso or "1er Momento").strip(),
+            nota_20=nota_20,
+            fecha=valor_fecha,
+        )
+        if hasattr(nuevo_reg, "nota_diaria"):
+            nuevo_reg.nota_diaria = nota_diaria_limpia
+        db.add(nuevo_reg)
+        db.commit()
+    except Exception as exc:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"No se pudo guardar la calificación: {exc}")
     return RedirectResponse(url="/panel", status_code=303)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 @app.post("/calificaciones/{calificacion_id}/editar")
 
