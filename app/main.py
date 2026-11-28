@@ -3328,7 +3328,11 @@ def panel(
 
 
 
-    asistencias = db.query(Asistencia).filter(Asistencia.matricula_id.in_(ids_mat)).all() if ids_mat else []
+    try:
+        asistencias = db.query(Asistencia).filter(Asistencia.matricula_id.in_(ids_mat)).order_by(Asistencia.fecha.desc(), Asistencia.id.desc()).all() if ids_mat else []
+    except Exception:
+        db.rollback()
+        asistencias = []
 
 
 
