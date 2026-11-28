@@ -7515,7 +7515,7 @@ def registrar_asistencia(
 
 
 
-    estado_just = "Sin justificar" if estado_limpio in ("Inasistente", "Retardo") else "No aplica"
+    estado_just = "Sin justificar" if estado_limpio in ("Inasistente", "Falta", "Retardo") else "No aplica"
 
 
 
