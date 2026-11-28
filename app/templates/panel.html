@@ -31842,7 +31842,8 @@
 
 
 
-              const fechaActual = (fechaInput && fechaInput.value) ? fechaInput.value : "";
+              const elFecha = (typeof fechaInput !== "undefined" && fechaInput) ? fechaInput : document.getElementById("fecha-clase-asistencia");
+              const fechaActual = (elFecha && elFecha.value) ? elFecha.value : "";
 
 
 
@@ -31950,7 +31951,8 @@
 
 
 
-              for (const reg of asistenciasPrevias) {
+              const listaAsistPrevias = (typeof asistenciasPrevias !== "undefined" && Array.isArray(asistenciasPrevias)) ? asistenciasPrevias : [];
+              for (const reg of listaAsistPrevias) {
 
 
 
