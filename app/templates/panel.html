@@ -18970,7 +18970,7 @@
 
 
 
-              const fechaActual = fechaEvalInput.value || "";
+              const fechaActual = (fechaEvalInput && fechaEvalInput.value) ? fechaEvalInput.value : new Date().toISOString().slice(0, 10);
 
 
 
@@ -19042,7 +19042,7 @@
 
 
 
-              theadEval.innerHTML = `<tr><th>Nombres y Apellidos</th><th>Fecha Actual (${fechaActual || "sin fecha"}) ? ${info.asignatura}</th></tr>`;
+              theadEval.innerHTML = `<tr><th>Nombres y Apellidos</th><th>Fecha Actual (${fechaActual}) · ${info.asignatura}</th></tr>`;
 
 
 
@@ -19420,7 +19420,7 @@
 
 
 
-                          <input type="number" name="nota_20" step="0.01" min="1" max="20" value="${prev.nota20 ? ""}" required class="inp" style="width:100px;" placeholder="1 - 20" />
+                          <input type="number" name="nota_20" step="0.01" min="1" max="20" value="${prev.nota20 ?? ""}" required class="inp" style="width:100px;" placeholder="1 - 20" />
 
 
 
@@ -31264,7 +31264,7 @@
 
 
 
-                    <input type="hidden" name="fecha" value="${fechaStr}" />
+                    <input type="hidden" name="fecha" value="${fechaStr || new Date().toISOString().slice(0, 10)}" />
 
 
 
@@ -31552,6 +31552,8 @@
 
 
 
+                    <option value="Falta">Falta</option>
+                    <option value="Retardo">Retardo</option>
                     <option value="Inasistente">Inasistente</option>
 
 
